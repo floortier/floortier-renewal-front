@@ -11,7 +11,7 @@ const moveTo = (to: string) => {
   router.push(to)
 }
 
-const login = () => {}
+const signin = () => {}
 </script>
 
 <template>
@@ -39,29 +39,19 @@ const login = () => {}
           label="비밀번호"
           placeholder="••••••••"
         />
-
-        <button-component type="submit" text="로그인" @click.prevent="login" />
+        <input-component
+          type="password"
+          id="user-password-check"
+          label="비밀번호확인"
+          placeholder="••••••••"
+        />
+        <button-component
+          type="submit"
+          text="회원가입"
+          @click.prevent="signin"
+        />
       </template>
     </form-component>
-    <div class="w-full flex flex-row justify-center justify-items-center">
-      <div class="my-4 mx-2 text-xs">
-        <a href="javascript:void(0)" @click.prevent="moveTo('search-pw')"
-          >비밀번호 찾기</a
-        >
-      </div>
-      <div class="my-4 mx-2 text-xs">|</div>
-      <div class="my-4 mx-2 text-xs">
-        <a href="javascript:void(0)" @click.prevent="moveTo('search-id')"
-          >아이디 찾기</a
-        >
-      </div>
-      <div class="my-4 mx-2 text-xs">|</div>
-      <div class="my-4 mx-2 text-xs">
-        <a href="javascript:void(0)" @click.prevent="moveTo('signin')"
-          >회원가입</a
-        >
-      </div>
-    </div>
   </div>
 </template>
 
