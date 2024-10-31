@@ -6,6 +6,12 @@ import api from '@/config/axiosConfig'
 export const useAuthStore = defineStore('auth', () => {
   // state
   const isLoggedIn = ref(false)
+  const userInfo = ref({
+    userId: '',
+    userName: '',
+    userPassword: '',
+    userPasswordCheck: '',
+  })
 
   // getter
 
@@ -28,5 +34,5 @@ export const useAuthStore = defineStore('auth', () => {
     checkDuplicate()
   }
 
-  return { isLoggedIn, login, logout, checkDuplicate, signin }
+  return { isLoggedIn, userInfo, login, logout, checkDuplicate, signin }
 })

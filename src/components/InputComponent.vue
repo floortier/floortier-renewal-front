@@ -7,6 +7,10 @@ interface InputProps {
 }
 
 const props = defineProps<InputProps>()
+
+const value = defineModel({
+  required: true,
+})
 </script>
 
 <template>
@@ -19,6 +23,7 @@ const props = defineProps<InputProps>()
       :id="props.id"
       class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 sm:text-sm"
       :placeholder="props.placeholder"
+      v-model="value"
     />
   </div>
 </template>

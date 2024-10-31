@@ -3,15 +3,11 @@ import FormComponent from '@/components/FormComponent.vue'
 import InputComponent from '@/components/InputComponent.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
 
-import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
+import { useCommonStore } from '@/stores/common/commonStore'
 
-const router = useRouter()
-
-const moveTo = (to: string) => {
-  router.push(to)
-}
-
-const login = () => {}
+const authStore = useAuthStore()
+const { moveTo } = useCommonStore()
 </script>
 
 <template>
@@ -32,15 +28,21 @@ const login = () => {}
           id="user-id"
           label="아이디"
           placeholder="아이디를 입력해 주세요"
+          v-model="authStore.userInfo.userId"
         />
         <input-component
           type="password"
           id="user-password"
           label="비밀번호"
           placeholder="••••••••"
+          v-model="authStore.userInfo.userPassword"
         />
 
-        <button-component type="submit" text="로그인" @click.prevent="login" />
+        <button-component
+          type="submit"
+          text="로그인"
+          @click.prevent="authStore.login"
+        />
       </template>
     </form-component>
     <div class="w-full flex flex-row justify-center justify-items-center">

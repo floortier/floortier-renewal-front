@@ -3,17 +3,11 @@ import FormComponent from '@/components/FormComponent.vue'
 import InputComponent from '@/components/InputComponent.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
 
-import { useRouter } from 'vue-router'
-
 import { useAuthStore } from '@/stores/authStore'
-
-const router = useRouter()
+import { useCommonStore } from '@/stores/common/commonStore'
 
 const authStore = useAuthStore()
-
-const moveTo = (to: string) => {
-  router.push(to)
-}
+const { moveTo } = useCommonStore()
 </script>
 
 <template>
@@ -35,18 +29,21 @@ const moveTo = (to: string) => {
           label="아이디"
           placeholder="아이디를 입력해 주세요"
           @keyup="authStore.checkDuplicate"
+          v-model="authStore.userInfo.userId"
         />
         <input-component
           type="password"
           id="user-password"
           label="비밀번호"
           placeholder="••••••••"
+          v-model="authStore.userInfo.userPassword"
         />
         <input-component
           type="password"
           id="user-password-check"
           label="비밀번호확인"
           placeholder="••••••••"
+          v-model="authStore.userInfo.userPasswordCheck"
         />
         <button-component
           type="submit"
