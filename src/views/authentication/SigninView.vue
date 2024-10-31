@@ -5,13 +5,15 @@ import ButtonComponent from '@/components/ButtonComponent.vue'
 
 import { useRouter } from 'vue-router'
 
+import { useAuthStore } from '@/stores/authStore'
+
 const router = useRouter()
+
+const authStore = useAuthStore()
 
 const moveTo = (to: string) => {
   router.push(to)
 }
-
-const signin = () => {}
 </script>
 
 <template>
@@ -32,6 +34,7 @@ const signin = () => {}
           id="user-id"
           label="아이디"
           placeholder="아이디를 입력해 주세요"
+          @keyup="authStore.checkDuplicate"
         />
         <input-component
           type="password"
@@ -48,7 +51,7 @@ const signin = () => {}
         <button-component
           type="submit"
           text="회원가입"
-          @click.prevent="signin"
+          @click.prevent="authStore.signin"
         />
       </template>
     </form-component>

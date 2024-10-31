@@ -2,8 +2,9 @@ import { RouteRecordRaw } from 'vue-router'
 
 // views
 import MainView from '@/views/main/MainView.vue'
-import LoginView from '@/views/login/LoginView.vue'
-import SigninView from '@/views/signin/SigninView.vue'
+
+import LoginView from '@/views/authentication/LoginView.vue'
+import SigninView from '@/views/authentication/SigninView.vue'
 
 // 404
 import NotFound from '@/views/NotFound.vue'
