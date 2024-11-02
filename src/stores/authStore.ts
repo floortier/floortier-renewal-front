@@ -36,8 +36,26 @@ export const useAuthStore = defineStore('auth', () => {
     userInfo.value = initUserInfo
   }
 
-  const login = () => {
-    isLoggedIn.value = true
+  const login = async () => {
+    const url = '/api/auth/login'
+    const obj = {
+      userId: userInfo.value.userId,
+      password: userInfo.value.password,
+    }
+
+    try {
+      const res = await api.post(url, obj)
+      if (res.data.success) {
+        isLoggedIn.value = true
+        // 메인 페이지로 이동
+        moveTo('/')
+      } else {
+        alert('로그인에 실패하였습니다.')
+        isLoggedIn.value = false
+      }
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   const logout = () => {

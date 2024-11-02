@@ -14,21 +14,25 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Main',
     component: MainView,
+    meta: { requiresAuth: true },
   },
   {
     path: '/login',
     name: 'Login',
     component: LoginView,
+    meta: { requiresAuth: false },
   },
   {
     path: '/signin',
     name: 'Signin',
     component: SigninView,
+    meta: { requiresAuth: false },
   },
   {
     path: '/:catchAll(.*)',
     name: 'not-found',
     component: NotFound,
+    meta: { requiresAuth: true },
   },
 ]
 
