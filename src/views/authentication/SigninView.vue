@@ -27,23 +27,31 @@ const { moveTo } = useCommonStore()
         <input-component
           id="user-id"
           label="아이디"
+          type="text"
           placeholder="아이디를 입력해 주세요"
-          @keyup="authStore.checkDuplicate"
           v-model="authStore.userInfo.userId"
+          @input="authStore.duplicateExists"
         />
+        <div v-if="authStore.userInfo.userId" class="isDuplicate-box">
+          <span v-if="authStore.isDuplicate" class="text-red-600"
+            >이미 존재하는 아이디 입니다.</span
+          >
+          <span v-else class="text-green-600">사용 가능한 아이디 입니다.</span>
+        </div>
         <input-component
-          type="password"
           id="user-password"
           label="비밀번호"
+          type="password"
           placeholder="••••••••"
-          v-model="authStore.userInfo.userPassword"
+          v-model="authStore.userInfo.password"
         />
         <input-component
-          type="password"
           id="user-password-check"
           label="비밀번호확인"
+          type="password"
           placeholder="••••••••"
-          v-model="authStore.userInfo.userPasswordCheck"
+          :class="authStore.passwordSync ? 'bg-green-200' : 'bg-red-200'"
+          v-model="authStore.userInfo.passwordcheck"
         />
         <button-component
           type="submit"
@@ -55,4 +63,8 @@ const { moveTo } = useCommonStore()
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.isDuplicate-box {
+  margin: 10px 0 0 0 !important;
+}
+</style>

@@ -35,7 +35,7 @@ const { moveTo } = useCommonStore()
           id="user-password"
           label="비밀번호"
           placeholder="••••••••"
-          v-model="authStore.userInfo.userPassword"
+          v-model="authStore.userInfo.password"
         />
 
         <button-component

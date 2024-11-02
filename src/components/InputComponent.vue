@@ -4,6 +4,7 @@ interface InputProps {
   label: string
   type?: 'text' | 'password' | 'email' | 'number'
   placeholder?: string
+  class?: string
 }
 
 const props = defineProps<InputProps>()
@@ -22,6 +23,7 @@ const value = defineModel({
       :type="props.type || 'text'"
       :id="props.id"
       class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 sm:text-sm"
+      :class="props.class"
       :placeholder="props.placeholder"
       v-model="value"
     />
