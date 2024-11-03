@@ -11,10 +11,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   // init
   const initUserInfo = {
-    // TODO: 한글 아이디 사용 불가 처리 필요
     userId: '',
     userName: '',
-    // TODO: 비밀번호 정규화 필요
     password: '',
     passwordcheck: '',
   }
