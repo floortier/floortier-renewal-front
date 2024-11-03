@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
+
 import FormComponent from '@/components/FormComponent.vue'
 import InputComponent from '@/components/InputComponent.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
@@ -8,12 +10,14 @@ import { useCommonStore } from '@/stores/common/commonStore'
 
 const authStore = useAuthStore()
 const { moveTo } = useCommonStore()
+
+onMounted(() => {
+  authStore.cleanUserInfo()
+})
 </script>
 
 <template>
-  <div
-    class="flex flex-col items-center justify-center px-6 mx-auto h-screen w-96"
-  >
+  <div class="flex flex-col items-center justify-center px-6 mx-auto h-screen w-96">
     <a
       class="flex items-center mb-6 text-2xl font-semibold text-gray-900"
       href="javascript:void(0)"
@@ -33,9 +37,7 @@ const { moveTo } = useCommonStore()
           @input="authStore.duplicateExists"
         />
         <div v-if="authStore.userInfo.userId" class="isDuplicate-box">
-          <span v-if="authStore.isDuplicate" class="text-red-600"
-            >이미 존재하는 아이디 입니다.</span
-          >
+          <span v-if="authStore.isDuplicate" class="text-red-600">이미 존재하는 아이디 입니다.</span>
           <span v-else class="text-green-600">사용 가능한 아이디 입니다.</span>
         </div>
         <input-component
@@ -53,11 +55,7 @@ const { moveTo } = useCommonStore()
           :class="authStore.passwordSync ? 'bg-green-200' : 'bg-red-200'"
           v-model="authStore.userInfo.passwordcheck"
         />
-        <button-component
-          type="submit"
-          text="회원가입"
-          @click.prevent="authStore.signin"
-        />
+        <button-component type="submit" text="회원가입" @click.prevent="authStore.signin" />
       </template>
     </form-component>
   </div>

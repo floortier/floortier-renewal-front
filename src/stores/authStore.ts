@@ -26,13 +26,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   // getter
   const passwordSync = computed(() => {
-    return userInfo.value.password == userInfo.value.passwordcheck
-      ? true
-      : false
+    return userInfo.value.password == userInfo.value.passwordcheck ? true : false
   })
 
   // actions
-  const clearUserInfo = () => {
+  const cleanUserInfo = () => {
     userInfo.value = initUserInfo
   }
 
@@ -88,6 +86,9 @@ export const useAuthStore = defineStore('auth', () => {
       return false
     }
 
+    // 정규식 확인
+    if (!scanRegex()) return false
+
     return true
   }
 
@@ -107,6 +108,29 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  const scanRegex = () => {
+    const id_regex = /^[a-zA-Z](?=.*[a-zA-Z0-9]$)(?!.*[_-]{2})[a-zA-Z0-9_-]{2,14}[a-zA-Z0-9]$/
+    const password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{8,}$/
+
+    if (!id_regex.test(userInfo.value.userId)) {
+      alert(
+        '1. 아이디는 4~16자이며\n' +
+          '2. 영문 대소문자로 시작하고\n' +
+          '3. 숫자, 언더스코어(_), 하이픈(-)을 포함할 수 있습니다.'
+      )
+      return false
+    } else if (!password_regex.test(userInfo.value.password)) {
+      alert(
+        '1. 비밀번호는 최소 8자 이상이어야 합니다.\n' +
+          '2. 비밀번호는 영문 대소문자, 숫자, 특수 문자를 각각 하나 이상 포함해야 합니다.\n' +
+          '3. 비밀번호에 공백 문자를 포함할 수 없습니다.'
+      )
+      return false
+    } else {
+      return true
+    }
+  }
+
   const signin = async () => {
     // 유효성
     const isValid = await validate()
@@ -123,9 +147,6 @@ export const useAuthStore = defineStore('auth', () => {
       const res = await api.post(url, obj)
       if (res.data.success) {
         alert('회원가입이 완료되었습니다.')
-        // 데이터 비우기
-        clearUserInfo()
-        // 로그인 페이지로 이동
         moveTo('/login')
       } else {
         alert('회원가입에 실패하였습니다.')
@@ -140,6 +161,8 @@ export const useAuthStore = defineStore('auth', () => {
     isDuplicate,
     userInfo,
     passwordSync,
+    cleanUserInfo,
+    scanRegex,
     login,
     logout,
     duplicateExists,

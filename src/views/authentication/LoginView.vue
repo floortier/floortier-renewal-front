@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
+
 import FormComponent from '@/components/FormComponent.vue'
 import InputComponent from '@/components/InputComponent.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
@@ -8,12 +10,14 @@ import { useCommonStore } from '@/stores/common/commonStore'
 
 const authStore = useAuthStore()
 const { moveTo } = useCommonStore()
+
+onMounted(() => {
+  authStore.cleanUserInfo()
+})
 </script>
 
 <template>
-  <div
-    class="flex flex-col items-center justify-center px-6 mx-auto h-screen w-96"
-  >
+  <div class="flex flex-col items-center justify-center px-6 mx-auto h-screen w-96">
     <a
       class="flex items-center mb-6 text-2xl font-semibold text-gray-900"
       href="javascript:void(0)"
@@ -38,30 +42,20 @@ const { moveTo } = useCommonStore()
           v-model="authStore.userInfo.password"
         />
 
-        <button-component
-          type="submit"
-          text="로그인"
-          @click.prevent="authStore.login"
-        />
+        <button-component type="submit" text="로그인" @click.prevent="authStore.login" />
       </template>
     </form-component>
     <div class="w-full flex flex-row justify-center justify-items-center">
       <div class="my-4 mx-2 text-xs">
-        <a href="javascript:void(0)" @click.prevent="moveTo('search-pw')"
-          >비밀번호 찾기</a
-        >
+        <a href="javascript:void(0)" @click.prevent="moveTo('search-pw')">비밀번호 찾기</a>
       </div>
       <div class="my-4 mx-2 text-xs">|</div>
       <div class="my-4 mx-2 text-xs">
-        <a href="javascript:void(0)" @click.prevent="moveTo('search-id')"
-          >아이디 찾기</a
-        >
+        <a href="javascript:void(0)" @click.prevent="moveTo('search-id')">아이디 찾기</a>
       </div>
       <div class="my-4 mx-2 text-xs">|</div>
       <div class="my-4 mx-2 text-xs">
-        <a href="javascript:void(0)" @click.prevent="moveTo('signin')"
-          >회원가입</a
-        >
+        <a href="javascript:void(0)" @click.prevent="moveTo('signin')">회원가입</a>
       </div>
     </div>
   </div>
