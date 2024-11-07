@@ -29,7 +29,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   // actions
   const cleanUserInfo = () => {
-    userInfo.value = initUserInfo
+    userInfo.value = { ...initUserInfo }
   }
 
   const login = async () => {
@@ -39,18 +39,12 @@ export const useAuthStore = defineStore('auth', () => {
       password: userInfo.value.password,
     }
 
-    try {
-      const res = await api.post(url, obj)
-      if (res.data.success) {
-        isLoggedIn.value = true
-        // 메인 페이지로 이동
-        moveTo('/')
-      } else {
-        alert('로그인에 실패하였습니다.')
-        isLoggedIn.value = false
-      }
-    } catch (err) {
-      console.error(err)
+    const res = await api.post(url, obj)
+
+    if (res.success) {
+      isLoggedIn.value = true
+      // 메인 페이지로 이동
+      moveTo('/')
     }
   }
 
@@ -93,17 +87,15 @@ export const useAuthStore = defineStore('auth', () => {
   const duplicateExists = async () => {
     const url = `/api/auth/isDuplicate`
     const obj = {
-      userId: userInfo.value.userId,
+      params: {
+        userId: userInfo.value.userId,
+      },
     }
 
-    try {
-      await api.post(url, obj).then((res) => {
-        if (res.data.userCnt > 0) isDuplicate.value = true
-        else isDuplicate.value = false
-      })
-    } catch (err) {
-      console.error(err)
-    }
+    const res = await api.get(url, obj)
+
+    if (res.data.cnt > 0) isDuplicate.value = true
+    else isDuplicate.value = false
   }
 
   const scanRegex = () => {
@@ -141,16 +133,10 @@ export const useAuthStore = defineStore('auth', () => {
       password: userInfo.value.password,
     }
 
-    try {
-      const res = await api.post(url, obj)
-      if (res.data.success) {
-        alert('회원가입이 완료되었습니다.')
-        moveTo('/login')
-      } else {
-        alert('회원가입에 실패하였습니다.')
-      }
-    } catch (err) {
-      console.log(err)
+    const res = await api.post(url, obj)
+
+    if (res.success) {
+      moveTo('/login')
     }
   }
 

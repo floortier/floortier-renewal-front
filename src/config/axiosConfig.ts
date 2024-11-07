@@ -13,5 +13,15 @@ const api = axios.create({
 // 요청 인터셉터
 
 // 응답 인터셉터
+api.interceptors.response.use(
+  (res) => {
+    if (res.data.message) alert(res.data.message)
+    return res.data
+  },
+  (err) => {
+    if (err.response.data.message) alert(err.response.data.message)
+    return Promise.reject(err)
+  }
+)
 
 export default api
