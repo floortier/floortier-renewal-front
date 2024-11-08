@@ -15,6 +15,8 @@ export const useAuthStore = defineStore('auth', () => {
     userName: '',
     password: '',
     passwordcheck: '',
+    userRace: '',
+    userTier: '',
   }
 
   // state
@@ -42,6 +44,10 @@ export const useAuthStore = defineStore('auth', () => {
     const res = await api.post(url, obj)
 
     if (res.success) {
+      if (res.data.returnURL) {
+        moveTo(res.data.returnURL)
+        return
+      }
       isLoggedIn.value = true
       // 메인 페이지로 이동
       moveTo('/')
