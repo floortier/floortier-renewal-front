@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onBeforeMount } from 'vue'
 
 import FormComponent from '@/components/FormComponent.vue'
 import InputComponent from '@/components/InputComponent.vue'
@@ -11,7 +11,7 @@ import { useCommonStore } from '@/stores/common/commonStore'
 const authStore = useAuthStore()
 const { moveTo } = useCommonStore()
 
-onMounted(() => {
+onBeforeMount(() => {
   authStore.cleanUserInfo()
 })
 </script>
