@@ -11,12 +11,10 @@ export const useAuthStore = defineStore('auth', () => {
 
   // init
   const initUserInfo = {
+    userSeq: '',
     userId: '',
-    userName: '',
     password: '',
     passwordcheck: '',
-    userRace: '',
-    userTier: '',
   }
 
   // state
@@ -35,7 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const login = async () => {
-    const url = '/api/auth/login'
+    const url = '/api/user/login'
     const obj = {
       userId: userInfo.value.userId,
       password: userInfo.value.password,
@@ -44,6 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
     const res = await api.post(url, obj)
 
     if (res.success) {
+      userInfo.value.userSeq = res.data.userInfo.userSeq
       if (res.data.returnURL) {
         moveTo(res.data.returnURL)
         return
@@ -91,7 +90,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const duplicateExists = async () => {
-    const url = `/api/auth/isDuplicate`
+    const url = `/api/user/isDuplicate`
     const obj = {
       params: {
         userId: userInfo.value.userId,
@@ -133,7 +132,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!isValid) return
 
     // 회원가입절차
-    const url = '/api/auth/signin'
+    const url = '/api/user/signin'
     const obj = {
       userId: userInfo.value.userId,
       password: userInfo.value.password,

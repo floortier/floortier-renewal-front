@@ -8,11 +8,18 @@ import InputComponent from '@/components/InputComponent.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
 
 import { useAuthStore } from '@/stores/authStore'
+import { useUserStore } from '@/stores/userStore'
+import { useCommonStore } from '@/stores/common/commonStore'
 
 const authStore = useAuthStore()
+const userStore = useUserStore()
+const { moveTo } = useCommonStore()
 
 onBeforeMount(() => {
-  authStore.cleanUserInfo()
+  if (authStore.userInfo.userSeq == undefined || authStore.userInfo.userSeq == '') {
+    moveTo('/')
+  }
+  userStore.cleanUserInfo()
 })
 
 const step = ref(1)
@@ -23,7 +30,7 @@ const nextStep = () => {
 
   // 닉네임 확인
   if (step.value == 2) {
-    if (authStore.userInfo.userName == '') {
+    if (userStore.userInfo.userName == '') {
       alert('닉네임을 입력해주세요.')
       --step.value
     }
@@ -31,7 +38,7 @@ const nextStep = () => {
 
   // 종족 확인
   if (step.value == 3) {
-    if (authStore.userInfo.userRace == '') {
+    if (userStore.userInfo.userRace == '') {
       alert('종족을 선택해주세요.')
       --step.value
     }
@@ -47,40 +54,45 @@ const onSwiper = (swiper: SwiperClass) => {
 }
 
 const selectRace = (race: string) => {
-  if (authStore.userInfo.userRace == '') {
-    authStore.userInfo.userRace = race
-  } else if (authStore.userInfo.userRace != race) {
-    authStore.userInfo.userRace = race
+  if (userStore.userInfo.userRace == '') {
+    userStore.userInfo.userRace = race
+  } else if (userStore.userInfo.userRace != race) {
+    userStore.userInfo.userRace = race
   } else {
-    authStore.userInfo.userRace = ''
+    userStore.userInfo.userRace = ''
   }
 }
 
 const selectTier = (tier: string) => {
-  if (authStore.userInfo.userTier == '') {
-    authStore.userInfo.userTier = tier
-  } else if (authStore.userInfo.userTier != tier) {
-    authStore.userInfo.userTier = tier
+  if (userStore.userInfo.userTier == '') {
+    userStore.userInfo.userTier = tier
+  } else if (userStore.userInfo.userTier != tier) {
+    userStore.userInfo.userTier = tier
   } else {
-    authStore.userInfo.userTier = ''
+    userStore.userInfo.userTier = ''
   }
 }
 
 const submit = () => {
+  if (userStore.userInfo.userTier == '') {
+    alert('티어을 선택해주세요.')
+    return
+  }
+
   if (
     confirm(
       '입력하신 데이터를 확인해주세요.\n' +
         '닉네임 : ' +
-        authStore.userInfo.userName +
+        userStore.userInfo.userName +
         '\n' +
         '종족 : ' +
-        authStore.userInfo.userRace +
+        userStore.userInfo.userRace +
         '\n' +
         '티어 : ' +
-        authStore.userInfo.userTier
+        userStore.userInfo.userTier
     )
   ) {
-    alert('submit')
+    userStore.saveProfile()
   }
 }
 </script>
@@ -96,7 +108,7 @@ const submit = () => {
             label=""
             type="text"
             placeholder="사용할 닉네임을 입력해주세요."
-            v-model="authStore.userInfo.userName"
+            v-model="userStore.userInfo.userName"
           />
           <div class="flex">
             <div class="w-full"></div>
@@ -121,7 +133,7 @@ const submit = () => {
             ><a href="javascript:void(0)" @click.prevent="selectRace('Terran')"
               ><img
                 class="race"
-                :class="{ 'race-selected': authStore.userInfo.userRace == 'Terran' }"
+                :class="{ 'race-selected': userStore.userInfo.userRace == 'Terran' }"
                 src="@/assets/images/logo_terran.png"
                 alt="Terran Logo" /></a
           ></swiper-slide>
@@ -129,7 +141,7 @@ const submit = () => {
             ><a href="javascript:void(0)" @click.prevent="selectRace('Protoss')"
               ><img
                 class="race"
-                :class="{ 'race-selected': authStore.userInfo.userRace == 'Protoss' }"
+                :class="{ 'race-selected': userStore.userInfo.userRace == 'Protoss' }"
                 src="@/assets/images/logo_protoss.png"
                 alt="Protoss Logo" /></a
           ></swiper-slide>
@@ -137,7 +149,7 @@ const submit = () => {
             ><a href="javascript:void(0)" @click.prevent="selectRace('Zerg')"
               ><img
                 class="race"
-                :class="{ 'race-selected': authStore.userInfo.userRace == 'Zerg' }"
+                :class="{ 'race-selected': userStore.userInfo.userRace == 'Zerg' }"
                 src="@/assets/images/logo_zerg.png"
                 alt="Zerg Logo" /></a
           ></swiper-slide>
@@ -172,7 +184,7 @@ const submit = () => {
             ><a href="javascript:void(0)" @click.prevent="selectTier('S')"
               ><img
                 class="tier"
-                :class="{ 'tier-selected': authStore.userInfo.userTier == 'S' }"
+                :class="{ 'tier-selected': userStore.userInfo.userTier == 'S' }"
                 src="@/assets/images/tier_s.png"
                 alt="S Tier Logo" /></a
           ></swiper-slide>
@@ -180,7 +192,7 @@ const submit = () => {
             ><a href="javascript:void(0)" @click.prevent="selectTier('A')"
               ><img
                 class="tier"
-                :class="{ 'tier-selected': authStore.userInfo.userTier == 'A' }"
+                :class="{ 'tier-selected': userStore.userInfo.userTier == 'A' }"
                 src="@/assets/images/tier_a.png"
                 alt="A Tier Logo" /></a
           ></swiper-slide>
@@ -188,7 +200,7 @@ const submit = () => {
             ><a href="javascript:void(0)" @click.prevent="selectTier('B')"
               ><img
                 class="tier"
-                :class="{ 'tier-selected': authStore.userInfo.userTier == 'B' }"
+                :class="{ 'tier-selected': userStore.userInfo.userTier == 'B' }"
                 src="@/assets/images/tier_b.png"
                 alt="B Tier Logo" /></a
           ></swiper-slide>
@@ -196,7 +208,7 @@ const submit = () => {
             ><a href="javascript:void(0)" @click.prevent="selectTier('C')"
               ><img
                 class="tier"
-                :class="{ 'tier-selected': authStore.userInfo.userTier == 'C' }"
+                :class="{ 'tier-selected': userStore.userInfo.userTier == 'C' }"
                 src="@/assets/images/tier_c.png"
                 alt="C Tier Logo" /></a
           ></swiper-slide>
@@ -204,7 +216,7 @@ const submit = () => {
             ><a href="javascript:void(0)" @click.prevent="selectTier('D')"
               ><img
                 class="tier"
-                :class="{ 'tier-selected': authStore.userInfo.userTier == 'D' }"
+                :class="{ 'tier-selected': userStore.userInfo.userTier == 'D' }"
                 src="@/assets/images/tier_d.png"
                 alt="D Tier Logo" /></a
           ></swiper-slide>
@@ -212,7 +224,7 @@ const submit = () => {
             ><a href="javascript:void(0)" @click.prevent="selectTier('E')"
               ><img
                 class="tier"
-                :class="{ 'tier-selected': authStore.userInfo.userTier == 'E' }"
+                :class="{ 'tier-selected': userStore.userInfo.userTier == 'E' }"
                 src="@/assets/images/tier_e.png"
                 alt="E Tier Logo" /></a
           ></swiper-slide>
@@ -220,7 +232,7 @@ const submit = () => {
             ><a href="javascript:void(0)" @click.prevent="selectTier('N')"
               ><img
                 class="tier"
-                :class="{ 'tier-selected': authStore.userInfo.userTier == 'N' }"
+                :class="{ 'tier-selected': userStore.userInfo.userTier == 'N' }"
                 src="@/assets/images/tier_n.png"
                 alt="None Tier Logo" /></a
           ></swiper-slide>
