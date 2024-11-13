@@ -27,12 +27,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = async (userId: string, password: string) => {
     const url = '/api/user/login'
-    const obj = {
-      userId,
-      password,
-    }
+    const formData = new FormData()
+    formData.append('userId', userId)
+    formData.append('password', password)
 
-    const res = await api.post(url, obj)
+    const res = await api.post(url, formData)
 
     if (res.success) {
       userInfo.value.userSeq = res.data.userInfo.userSeq
@@ -127,12 +126,11 @@ export const useAuthStore = defineStore('auth', () => {
 
     // 회원가입절차
     const url = '/api/user/signin'
-    const obj = {
-      userId,
-      password,
-    }
+    const formData = new FormData()
+    formData.append('userId', userId)
+    formData.append('password', password)
 
-    const res = await api.post(url, obj)
+    const res = await api.post(url, formData)
 
     if (res.success) {
       moveTo('/login')
