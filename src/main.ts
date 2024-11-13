@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { createPersistedState } from 'pinia-plugin-persistedstate'
 
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
@@ -15,6 +16,14 @@ import '@/assets/styles/main.scss'
 
 const app = createApp(App)
 const pinia = createPinia()
+
+// 플러그인 사용
+pinia.use(
+  createPersistedState({
+    storage: localStorage,
+    auto: true,
+  })
+)
 
 app.use(pinia)
 app.use(router)
