@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 
 import FormComponent from '@/components/FormComponent.vue'
 import InputComponent from '@/components/InputComponent.vue'
@@ -14,6 +14,9 @@ const { moveTo } = useCommonStore()
 onBeforeMount(() => {
   authStore.cleanUserInfo()
 })
+
+const userId = ref('')
+const password = ref('')
 </script>
 
 <template>
@@ -28,21 +31,16 @@ onBeforeMount(() => {
     </a>
     <form-component>
       <template #content>
-        <input-component
-          id="user-id"
-          label="아이디"
-          placeholder="아이디를 입력해 주세요"
-          v-model="authStore.userInfo.userId"
-        />
+        <input-component id="user-id" label="아이디" placeholder="아이디를 입력해 주세요" v-model="userId" />
         <input-component
           type="password"
           id="user-password"
           label="비밀번호"
           placeholder="••••••••"
-          v-model="authStore.userInfo.password"
+          v-model="password"
         />
 
-        <button-component type="submit" text="로그인" @click.prevent="authStore.login" />
+        <button-component type="submit" text="로그인" @click.prevent="authStore.login(userId, password)" />
       </template>
     </form-component>
     <div class="w-full flex flex-row justify-center justify-items-center">

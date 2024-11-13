@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, computed, ref } from 'vue'
 
 import FormComponent from '@/components/FormComponent.vue'
 import InputComponent from '@/components/InputComponent.vue'
@@ -13,6 +13,15 @@ const { moveTo } = useCommonStore()
 
 onBeforeMount(() => {
   authStore.cleanUserInfo()
+})
+
+const userId = ref('')
+const password = ref('')
+const passwordcheck = ref('')
+
+// getter
+const passwordSync = computed(() => {
+  return password.value == passwordcheck.value ? true : false
 })
 </script>
 
@@ -33,10 +42,10 @@ onBeforeMount(() => {
           label="아이디"
           type="text"
           placeholder="아이디를 입력해 주세요"
-          v-model="authStore.userInfo.userId"
-          @input="authStore.duplicateExists"
+          v-model="userId"
+          @input="authStore.duplicateExists(userId)"
         />
-        <div v-if="authStore.userInfo.userId" class="isDuplicate-box">
+        <div v-if="userId" class="isDuplicate-box">
           <span v-if="authStore.isDuplicate" class="text-red-600">이미 존재하는 아이디 입니다.</span>
           <span v-else class="text-green-600">사용 가능한 아이디 입니다.</span>
         </div>
@@ -45,17 +54,21 @@ onBeforeMount(() => {
           label="비밀번호"
           type="password"
           placeholder="••••••••"
-          v-model="authStore.userInfo.password"
+          v-model="password"
         />
         <input-component
           id="user-password-check"
           label="비밀번호확인"
           type="password"
           placeholder="••••••••"
-          :class="authStore.passwordSync ? 'bg-green-200' : 'bg-red-200'"
-          v-model="authStore.userInfo.passwordcheck"
+          :class="passwordSync ? 'bg-green-200' : 'bg-red-200'"
+          v-model="passwordcheck"
         />
-        <button-component type="submit" text="회원가입" @click.prevent="authStore.signin" />
+        <button-component
+          type="submit"
+          text="회원가입"
+          @click.prevent="authStore.signin(userId, password, passwordcheck)"
+        />
       </template>
     </form-component>
   </div>
