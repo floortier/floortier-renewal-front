@@ -20,7 +20,7 @@ const pinia = createPinia()
 // 플러그인 사용
 pinia.use(
   createPersistedState({
-    storage: localStorage,
+    storage: sessionStorage,
     auto: true,
   })
 )

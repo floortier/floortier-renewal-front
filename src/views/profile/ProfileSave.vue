@@ -11,16 +11,33 @@ import { useAuthStore } from '@/stores/authStore'
 import { useUserStore } from '@/stores/userStore'
 import { useCommonStore } from '@/stores/common/commonStore'
 
+import LOGO_TERRAN from '@/assets/images/logo_terran.png'
+import LOGO_PROTOSS from '@/assets/images/logo_protoss.png'
+import LOGO_ZERG from '@/assets/images/logo_zerg.png'
+
+import TIER_S from '@/assets/images/tier_s.png'
+import TIER_A from '@/assets/images/tier_a.png'
+import TIER_B from '@/assets/images/tier_b.png'
+import TIER_C from '@/assets/images/tier_c.png'
+import TIER_D from '@/assets/images/tier_d.png'
+import TIER_E from '@/assets/images/tier_e.png'
+import TIER_N from '@/assets/images/tier_n.png'
+
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const { moveTo } = useCommonStore()
 
 onBeforeMount(() => {
-  if (authStore.userInfo.userSeq == undefined || authStore.userInfo.userSeq == '') {
-    moveTo('/')
-  }
+  // if (authStore.userInfo.userSeq == undefined || authStore.userInfo.userSeq == '') {
+  //   moveTo('/')
+  // }
   userStore.cleanUserInfo()
 })
+
+const list = {
+  race: ['Terran', 'Protoss', 'Zerg'],
+  tier: ['S', 'A', 'B', 'C', 'D', 'E', 'N'],
+}
 
 const step = ref(1)
 const swiperRef = ref<SwiperClass>()
@@ -95,6 +112,32 @@ const submit = () => {
     userStore.saveProfile()
   }
 }
+
+const getImage = (param: string) => {
+  switch (param) {
+    case 'Terran':
+      return LOGO_TERRAN
+    case 'Protoss':
+      return LOGO_PROTOSS
+    case 'Zerg':
+      return LOGO_ZERG
+
+    case 'S':
+      return TIER_S
+    case 'A':
+      return TIER_A
+    case 'B':
+      return TIER_B
+    case 'C':
+      return TIER_C
+    case 'D':
+      return TIER_D
+    case 'E':
+      return TIER_E
+    case 'N':
+      return TIER_N
+  }
+}
 </script>
 
 <template>
@@ -129,29 +172,13 @@ const submit = () => {
               }
             "
           ></div>
-          <swiper-slide
-            ><a href="javascript:void(0)" @click.prevent="selectRace('Terran')"
+          <swiper-slide v-for="item in list.race"
+            ><a href="javascript:void(0)" @click.prevent="selectRace(item)"
               ><img
                 class="race"
-                :class="{ 'race-selected': userStore.userInfo.userRace == 'Terran' }"
-                src="@/assets/images/logo_terran.png"
-                alt="Terran Logo" /></a
-          ></swiper-slide>
-          <swiper-slide
-            ><a href="javascript:void(0)" @click.prevent="selectRace('Protoss')"
-              ><img
-                class="race"
-                :class="{ 'race-selected': userStore.userInfo.userRace == 'Protoss' }"
-                src="@/assets/images/logo_protoss.png"
-                alt="Protoss Logo" /></a
-          ></swiper-slide>
-          <swiper-slide
-            ><a href="javascript:void(0)" @click.prevent="selectRace('Zerg')"
-              ><img
-                class="race"
-                :class="{ 'race-selected': userStore.userInfo.userRace == 'Zerg' }"
-                src="@/assets/images/logo_zerg.png"
-                alt="Zerg Logo" /></a
+                :class="{ 'race-selected': userStore.userInfo.userRace == item }"
+                :src="getImage(item)"
+                :alt="`${item} Logo`" /></a
           ></swiper-slide>
           <div
             class="swiper-button-next"
@@ -180,61 +207,13 @@ const submit = () => {
               }
             "
           ></div>
-          <swiper-slide class="flex flex-col items-center"
-            ><a href="javascript:void(0)" @click.prevent="selectTier('S')"
+          <swiper-slide v-for="item in list.tier" class="flex flex-col items-center"
+            ><a href="javascript:void(0)" @click.prevent="selectTier(item)"
               ><img
                 class="tier"
-                :class="{ 'tier-selected': userStore.userInfo.userTier == 'S' }"
-                src="@/assets/images/tier_s.png"
-                alt="S Tier Logo" /></a
-          ></swiper-slide>
-          <swiper-slide class="flex flex-col items-center"
-            ><a href="javascript:void(0)" @click.prevent="selectTier('A')"
-              ><img
-                class="tier"
-                :class="{ 'tier-selected': userStore.userInfo.userTier == 'A' }"
-                src="@/assets/images/tier_a.png"
-                alt="A Tier Logo" /></a
-          ></swiper-slide>
-          <swiper-slide class="flex flex-col items-center"
-            ><a href="javascript:void(0)" @click.prevent="selectTier('B')"
-              ><img
-                class="tier"
-                :class="{ 'tier-selected': userStore.userInfo.userTier == 'B' }"
-                src="@/assets/images/tier_b.png"
-                alt="B Tier Logo" /></a
-          ></swiper-slide>
-          <swiper-slide class="flex flex-col items-center"
-            ><a href="javascript:void(0)" @click.prevent="selectTier('C')"
-              ><img
-                class="tier"
-                :class="{ 'tier-selected': userStore.userInfo.userTier == 'C' }"
-                src="@/assets/images/tier_c.png"
-                alt="C Tier Logo" /></a
-          ></swiper-slide>
-          <swiper-slide class="flex flex-col items-center"
-            ><a href="javascript:void(0)" @click.prevent="selectTier('D')"
-              ><img
-                class="tier"
-                :class="{ 'tier-selected': userStore.userInfo.userTier == 'D' }"
-                src="@/assets/images/tier_d.png"
-                alt="D Tier Logo" /></a
-          ></swiper-slide>
-          <swiper-slide class="flex flex-col items-center"
-            ><a href="javascript:void(0)" @click.prevent="selectTier('E')"
-              ><img
-                class="tier"
-                :class="{ 'tier-selected': userStore.userInfo.userTier == 'E' }"
-                src="@/assets/images/tier_e.png"
-                alt="E Tier Logo" /></a
-          ></swiper-slide>
-          <swiper-slide class="flex flex-col items-center"
-            ><a href="javascript:void(0)" @click.prevent="selectTier('N')"
-              ><img
-                class="tier"
-                :class="{ 'tier-selected': userStore.userInfo.userTier == 'N' }"
-                src="@/assets/images/tier_n.png"
-                alt="None Tier Logo" /></a
+                :class="{ 'tier-selected': userStore.userInfo.userTier == item }"
+                :src="getImage(item)"
+                :alt="`${item} Tier Logo`" /></a
           ></swiper-slide>
           <div
             class="swiper-button-next"
