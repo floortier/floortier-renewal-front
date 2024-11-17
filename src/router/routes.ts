@@ -7,6 +7,9 @@ import LoginView from '@/views/authentication/LoginView.vue'
 import SigninView from '@/views/authentication/SigninView.vue'
 import ProfileSave from '@/views/profile/ProfileSave.vue'
 
+// main
+import DashboardView from '@/views/dashboard/DashboardView.vue'
+
 // 404
 import NotFound from '@/views/NotFound.vue'
 
@@ -15,6 +18,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Main',
     component: MainView,
+    redirect: { name: 'Dashboard' },
+    children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: DashboardView,
+      },
+    ],
     meta: { requiresAuth: true },
   },
   {
