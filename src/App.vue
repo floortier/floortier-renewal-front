@@ -1,7 +1,9 @@
 <script setup lang="ts"></script>
 
 <template>
-  <router-view />
+  <div class="flex flex-col items-center">
+    <router-view />
+  </div>
 </template>
 
 <style lang="scss" scoped></style>

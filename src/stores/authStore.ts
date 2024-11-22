@@ -33,11 +33,11 @@ export const useAuthStore = defineStore('auth', () => {
 
     const res = await api.post(url, formData)
 
-    if (res.success) {
-      userInfo.value.userSeq = res.data.userInfo.userSeq
-      userInfo.value.userId = res.data.userInfo.userId
-      if (res.data.returnURL) {
-        moveTo(res.data.returnURL)
+    if (res.data.success) {
+      userInfo.value.userSeq = res.data.responseData.userInfo.userSeq
+      userInfo.value.userId = res.data.responseData.userInfo.userId
+      if (res.data.responseData.returnURL) {
+        moveTo(res.data.responseData.returnURL)
         return
       }
       isLoggedIn.value = true
@@ -92,7 +92,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const res = await api.get(url, obj)
 
-    if (res.data.cnt > 0) isDuplicate.value = true
+    if (res.data.responseData.cnt > 0) isDuplicate.value = true
     else isDuplicate.value = false
   }
 
@@ -132,7 +132,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const res = await api.post(url, formData)
 
-    if (res.success) {
+    if (res.data.success) {
       moveTo('/login')
     }
   }

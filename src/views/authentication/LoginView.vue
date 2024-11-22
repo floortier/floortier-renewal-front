@@ -11,8 +11,10 @@ import { useCommonStore } from '@/stores/common/commonStore'
 const authStore = useAuthStore()
 const { moveTo } = useCommonStore()
 
+const { cleanUserInfo, login } = authStore
+
 onBeforeMount(() => {
-  authStore.cleanUserInfo()
+  cleanUserInfo()
 })
 
 const userId = ref('')
@@ -40,7 +42,7 @@ const password = ref('')
           v-model="password"
         />
 
-        <button-component type="submit" text="로그인" @click.prevent="authStore.login(userId, password)" />
+        <button-component type="submit" text="로그인" @click.prevent="login(userId, password)" />
       </template>
     </form-component>
     <div class="w-full flex flex-row justify-center justify-items-center">

@@ -39,7 +39,7 @@ export const useUserStore = defineStore('user', () => {
 
     const res = await api.post(url, obj)
 
-    if (res.success) {
+    if (res.data.success) {
       moveTo('/')
     }
   }

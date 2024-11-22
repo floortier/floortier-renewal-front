@@ -16,7 +16,7 @@ const api = axios.create({
 api.interceptors.response.use(
   (res) => {
     if (res.data.message) alert(res.data.message)
-    return res.data
+    return res
   },
   (err) => {
     if (err.response.data.message) alert(err.response.data.message)
