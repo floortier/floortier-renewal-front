@@ -4,6 +4,7 @@ interface InputProps {
   label: string
   type?: 'text' | 'password' | 'email' | 'number'
   placeholder?: string
+  explain?: string
   class?: string
 }
 
@@ -25,8 +26,12 @@ const value = defineModel({
       class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 sm:text-sm"
       :class="props.class"
       :placeholder="props.placeholder"
+      :explain="props.explain"
       v-model="value"
     />
+    <div>
+      <span class="text-xs text-red-400">{{ props.explain }}</span>
+    </div>
   </div>
 </template>
 

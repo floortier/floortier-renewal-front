@@ -8,7 +8,6 @@ import TIER_B from './tier_b.png'
 import TIER_C from './tier_c.png'
 import TIER_D from './tier_d.png'
 import TIER_E from './tier_e.png'
-import TIER_N from './tier_n.png'
 
 export const raceImages = {
   Terran: LOGO_TERRAN,
@@ -23,5 +22,4 @@ export const tierImages = {
   C: TIER_C,
   D: TIER_D,
   E: TIER_E,
-  N: TIER_N,
 }

@@ -18,6 +18,8 @@ onBeforeMount(() => {
 const userId = ref('')
 const password = ref('')
 const passwordcheck = ref('')
+const userName = ref('')
+const birthday = ref('')
 
 // getter
 const passwordSync = computed(() => {
@@ -37,6 +39,7 @@ const passwordSync = computed(() => {
     </a>
     <form-component>
       <template #content>
+        <span class="text-xs text-red-400">※ 바닥티어는 클린한 회원관리를 위해 최소한의 개인정보를 확인합니다.</span>
         <input-component
           id="user-id"
           label="아이디"
@@ -49,6 +52,15 @@ const passwordSync = computed(() => {
           <span v-if="authStore.isDuplicate" class="text-red-600">이미 존재하는 아이디 입니다.</span>
           <span v-else class="text-green-600">사용 가능한 아이디 입니다.</span>
         </div>
+        <input-component id="user-name" label="이름" type="text" placeholder="실명을 작성해주세요" v-model="userName" />
+        <input-component
+          id="birthday"
+          label="생년월일"
+          type="text"
+          placeholder="생년월일을 작성해주세요"
+          explain="예) 2024-12-31"
+          v-model="birthday"
+        />
         <input-component
           id="user-password"
           label="비밀번호"
@@ -67,7 +79,7 @@ const passwordSync = computed(() => {
         <button-component
           type="submit"
           text="회원가입"
-          @click.prevent="authStore.signin(userId, password, passwordcheck)"
+          @click.prevent="authStore.signin(userId, password, passwordcheck, userName, birthday)"
         />
       </template>
     </form-component>

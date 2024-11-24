@@ -5,7 +5,6 @@ import MainView from '@/views/main/MainView.vue'
 
 import LoginView from '@/views/authentication/LoginView.vue'
 import SigninView from '@/views/authentication/SigninView.vue'
-import ProfileSave from '@/views/profile/ProfileSave.vue'
 
 // main
 import DashboardView from '@/views/dashboard/DashboardView.vue'
@@ -38,12 +37,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/signin',
     name: 'Signin',
     component: SigninView,
-    meta: { requiresAuth: false },
-  },
-  {
-    path: '/profile/save',
-    name: 'ProfileSave',
-    component: ProfileSave,
     meta: { requiresAuth: false },
   },
   {
