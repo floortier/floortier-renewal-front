@@ -44,7 +44,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const logout = () => {
+  const signout = () => {
     isLoggedIn.value = false
   }
 
@@ -161,7 +161,7 @@ export const useAuthStore = defineStore('auth', () => {
     cleanUserInfo,
     scanRegex,
     signin,
-    logout,
+    signout,
     duplicateExists,
     signup,
   }
