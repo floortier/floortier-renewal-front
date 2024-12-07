@@ -55,7 +55,7 @@ const password = ref('')
       </div>
       <div class="my-4 mx-2 text-xs">|</div>
       <div class="my-4 mx-2 text-xs">
-        <a href="javascript:void(0)" @click.prevent="moveTo('signin')">회원가입</a>
+        <a href="javascript:void(0)" @click.prevent="moveTo('signup')">회원가입</a>
       </div>
     </div>
   </div>

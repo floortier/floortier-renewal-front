@@ -79,7 +79,7 @@ const passwordSync = computed(() => {
         <button-component
           type="submit"
           text="회원가입"
-          @click.prevent="authStore.signin(userId, password, passwordcheck, userName, birthday)"
+          @click.prevent="authStore.signup(userId, password, passwordcheck, userName, birthday)"
         />
       </template>
     </form-component>

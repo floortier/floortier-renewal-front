@@ -128,7 +128,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const signin = async (
+  const signup = async (
     userId: string,
     password: string,
     passwordcheck: string,
@@ -140,7 +140,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!isValid) return
 
     // 회원가입절차
-    const url = '/api/user/signin'
+    const url = '/api/user/signup'
     const formData = new FormData()
     formData.append('userId', userId)
     formData.append('password', password)
@@ -163,6 +163,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     logout,
     duplicateExists,
-    signin,
+    signup,
   }
 })
