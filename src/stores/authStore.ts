@@ -25,8 +25,8 @@ export const useAuthStore = defineStore('auth', () => {
     userInfo.value = { ...initUserInfo }
   }
 
-  const login = async (userId: string, password: string) => {
-    const url = '/api/user/login'
+  const signin = async (userId: string, password: string) => {
+    const url = '/api/user/signin'
     const formData = new FormData()
     formData.append('userId', userId)
     formData.append('password', password)
@@ -150,7 +150,7 @@ export const useAuthStore = defineStore('auth', () => {
     const res = await api.post(url, formData)
 
     if (res.data.success) {
-      moveTo('/login')
+      moveTo('/signin')
     }
   }
 
@@ -160,7 +160,7 @@ export const useAuthStore = defineStore('auth', () => {
     userInfo,
     cleanUserInfo,
     scanRegex,
-    login,
+    signin,
     logout,
     duplicateExists,
     signup,

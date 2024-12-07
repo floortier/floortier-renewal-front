@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router'
 // views
 import MainView from '@/views/main/MainView.vue'
 
-import LoginView from '@/views/authentication/LoginView.vue'
+import SigninView from '@/views/authentication/SigninView.vue'
 import SignupView from '@/views/authentication/SignupView.vue'
 
 // main
@@ -28,9 +28,9 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: LoginView,
+    path: '/signin',
+    name: 'Signin',
+    component: SigninView,
     meta: { requiresAuth: false },
   },
   {
