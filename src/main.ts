@@ -6,6 +6,10 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import 'swiper/css/navigation'
 
+import FormComponent from '@/components/FormComponent.vue'
+import InputComponent from '@/components/InputComponent.vue'
+import ButtonComponent from '@/components/ButtonComponent.vue'
+
 import App from './App.vue'
 
 // 라우터
@@ -30,5 +34,9 @@ app.use(router)
 
 app.component('Swiper', Swiper)
 app.component('SwiperSlide', SwiperSlide)
+
+app.component('FormComponent', FormComponent)
+app.component('InputComponent', InputComponent)
+app.component('ButtonComponent', ButtonComponent)
 
 app.mount('#app')
