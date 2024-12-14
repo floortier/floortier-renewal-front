@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue'
 
-import FormComponent from '@/components/FormComponent.vue'
-import InputComponent from '@/components/InputComponent.vue'
-import ButtonComponent from '@/components/ButtonComponent.vue'
-
 import { useAuthStore } from '@/stores/authStore'
 import { useCommonStore } from '@/stores/common/commonStore'
 
@@ -17,7 +13,7 @@ onBeforeMount(() => {
   cleanUserInfo()
 })
 
-const userId = ref('')
+const username = ref('')
 const password = ref('')
 </script>
 
@@ -33,25 +29,19 @@ const password = ref('')
     </a>
     <form-component>
       <template #content>
-        <input-component id="user-id" label="아이디" placeholder="아이디를 입력해 주세요" v-model="userId" />
-        <input-component
-          type="password"
-          id="user-password"
-          label="비밀번호"
-          placeholder="••••••••"
-          v-model="password"
-        />
+        <input-component id="username" label="아이디" placeholder="아이디를 입력해 주세요" v-model="username" />
+        <input-component type="password" id="password" label="비밀번호" placeholder="••••••••" v-model="password" />
 
-        <button-component type="submit" text="로그인" @click.prevent="signin(userId, password)" />
+        <button-component type="submit" text="로그인" @click.prevent="signin(username, password)" />
       </template>
     </form-component>
     <div class="w-full flex flex-row justify-center justify-items-center">
       <div class="my-4 mx-2 text-xs">
-        <a href="javascript:void(0)" @click.prevent="moveTo('search-pw')">비밀번호 찾기</a>
+        <a href="javascript:void(0)" @click.prevent="moveTo('searchid')">아이디 찾기</a>
       </div>
       <div class="my-4 mx-2 text-xs">|</div>
       <div class="my-4 mx-2 text-xs">
-        <a href="javascript:void(0)" @click.prevent="moveTo('search-id')">아이디 찾기</a>
+        <a href="javascript:void(0)" @click.prevent="moveTo('searchpw')">비밀번호 찾기</a>
       </div>
       <div class="my-4 mx-2 text-xs">|</div>
       <div class="my-4 mx-2 text-xs">

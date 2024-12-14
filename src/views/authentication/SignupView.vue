@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { onBeforeMount, computed, ref } from 'vue'
 
-import FormComponent from '@/components/FormComponent.vue'
-import InputComponent from '@/components/InputComponent.vue'
-import ButtonComponent from '@/components/ButtonComponent.vue'
-
 import { useAuthStore } from '@/stores/authStore'
 import { useCommonStore } from '@/stores/common/commonStore'
 
@@ -15,10 +11,10 @@ onBeforeMount(() => {
   authStore.cleanUserInfo()
 })
 
-const userId = ref('')
+const username = ref('')
 const password = ref('')
 const passwordcheck = ref('')
-const userName = ref('')
+const userRealName = ref('')
 const birthday = ref('')
 
 // getter
@@ -57,18 +53,24 @@ const passwordSync = computed(() => {
       <template #content>
         <span class="text-xs text-red-400">※ 바닥티어는 클린한 회원관리를 위해 최소한의 개인정보를 확인합니다.</span>
         <input-component
-          id="user-id"
+          id="username"
           label="아이디"
           type="text"
           placeholder="아이디를 입력해 주세요"
-          v-model="userId"
-          @input="authStore.duplicateExists(userId)"
+          v-model="username"
+          @input="authStore.duplicateExists(username)"
         />
-        <div v-if="userId" class="isDuplicate-box">
+        <div v-if="username" class="isDuplicate-box">
           <span v-if="authStore.isDuplicate" class="text-red-600">이미 존재하는 아이디 입니다.</span>
           <span v-else class="text-green-600">사용 가능한 아이디 입니다.</span>
         </div>
-        <input-component id="user-name" label="이름" type="text" placeholder="실명을 작성해주세요" v-model="userName" />
+        <input-component
+          id="user-real-name"
+          label="이름"
+          type="text"
+          placeholder="실명을 작성해주세요"
+          v-model="userRealName"
+        />
         <input-component
           id="birthday"
           label="생년월일"
@@ -77,13 +79,7 @@ const passwordSync = computed(() => {
           explain="예) 2024-12-31"
           v-model="birthday"
         />
-        <input-component
-          id="user-password"
-          label="비밀번호"
-          type="password"
-          placeholder="••••••••"
-          v-model="password"
-        />
+        <input-component id="password" label="비밀번호" type="password" placeholder="••••••••" v-model="password" />
         <input-component
           id="user-password-check"
           label="비밀번호확인"
@@ -95,7 +91,7 @@ const passwordSync = computed(() => {
         <button-component
           type="submit"
           text="회원가입"
-          @click.prevent="authStore.signup(userId, password, passwordcheck, userName, birthday)"
+          @click.prevent="authStore.signup(username, password, passwordcheck, userRealName, birthday)"
         />
       </template>
     </form-component>

@@ -12,7 +12,7 @@ export const useAuthStore = defineStore('auth', () => {
   // init
   const initUserInfo = {
     userSeq: '',
-    userId: '',
+    username: '',
   }
 
   // state
@@ -25,17 +25,17 @@ export const useAuthStore = defineStore('auth', () => {
     userInfo.value = { ...initUserInfo }
   }
 
-  const signin = async (userId: string, password: string) => {
+  const signin = async (username: string, password: string) => {
     const url = '/api/user/signin'
     const formData = new FormData()
-    formData.append('userId', userId)
+    formData.append('username', username)
     formData.append('password', password)
 
     const res = await api.post(url, formData)
 
     if (res.data.success) {
       userInfo.value.userSeq = res.data.responseData.userInfo.userSeq
-      userInfo.value.userId = res.data.responseData.userInfo.userId
+      userInfo.value.username = res.data.responseData.userInfo.username
 
       isLoggedIn.value = true
 
@@ -49,19 +49,19 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const validate = async (
-    userId: string,
+    username: string,
     password: string,
     passwordcheck: string,
-    userName: string,
+    userRealName: string,
     birthday: string
   ) => {
     // 필드 확인
     const missingFields = []
 
-    if (!userId) missingFields.push('아이디')
+    if (!username) missingFields.push('아이디')
     if (!password) missingFields.push('비밀번호')
     if (!passwordcheck) missingFields.push('비밀번호 확인')
-    if (!userName) missingFields.push('이름')
+    if (!userRealName) missingFields.push('이름')
     if (!birthday) missingFields.push('생년월일')
 
     if (missingFields.length > 0) {
@@ -76,10 +76,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     // 정규식 확인
-    if (!scanRegex(userId, password, birthday)) return false
+    if (!scanRegex(username, password, birthday)) return false
 
     // 아이디 확인
-    await duplicateExists(userId)
+    await duplicateExists(username)
     if (isDuplicate.value) {
       alert('이미 존재하는 사용자입니다.')
       return false
@@ -88,11 +88,11 @@ export const useAuthStore = defineStore('auth', () => {
     return true
   }
 
-  const duplicateExists = async (userId: string) => {
+  const duplicateExists = async (username: string) => {
     const url = `/api/user/isDuplicate`
     const obj = {
       params: {
-        userId,
+        username,
       },
     }
 
@@ -102,12 +102,12 @@ export const useAuthStore = defineStore('auth', () => {
     else isDuplicate.value = false
   }
 
-  const scanRegex = (userId: string, password: string, birthday: string) => {
+  const scanRegex = (username: string, password: string, birthday: string) => {
     const id_regex = /^[a-zA-Z](?=.*[a-zA-Z0-9]$)(?!.*[_-]{2})[a-zA-Z0-9_-]{2,14}[a-zA-Z0-9]$/
     const password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{8,}$/
     const birthday_regex = /^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/
 
-    if (!id_regex.test(userId)) {
+    if (!id_regex.test(username)) {
       alert(
         '1. 아이디는 4~16자이며\n' +
           '2. 영문 대소문자로 시작하고\n' +
@@ -129,22 +129,22 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const signup = async (
-    userId: string,
+    username: string,
     password: string,
     passwordcheck: string,
-    userName: string,
+    userRealName: string,
     birthday: string
   ) => {
     // 유효성
-    const isValid = await validate(userId, password, passwordcheck, userName, birthday)
+    const isValid = await validate(username, password, passwordcheck, userRealName, birthday)
     if (!isValid) return
 
     // 회원가입절차
     const url = '/api/user/signup'
     const formData = new FormData()
-    formData.append('userId', userId)
+    formData.append('username', username)
     formData.append('password', password)
-    formData.append('userName', userName)
+    formData.append('userRealName', userRealName)
     formData.append('birthday', birthday)
 
     const res = await api.post(url, formData)
