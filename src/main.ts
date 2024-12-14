@@ -6,8 +6,12 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import 'swiper/css/navigation'
 
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+
 import FormComponent from '@/components/FormComponent.vue'
 import InputComponent from '@/components/InputComponent.vue'
+import DateComponent from '@/components/DateComponent.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
 
 import App from './App.vue'
@@ -34,9 +38,11 @@ app.use(router)
 
 app.component('Swiper', Swiper)
 app.component('SwiperSlide', SwiperSlide)
+app.component('VueDatePicker', VueDatePicker)
 
 app.component('FormComponent', FormComponent)
 app.component('InputComponent', InputComponent)
+app.component('DateComponent', DateComponent)
 app.component('ButtonComponent', ButtonComponent)
 
 app.mount('#app')

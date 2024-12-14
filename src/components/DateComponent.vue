@@ -1,17 +1,25 @@
 <script setup lang="ts">
-interface InputProps {
+import { watch } from 'vue'
+import { format } from '@/stores/common/formatter'
+
+interface DateProps {
   id: string
   label: string
-  type?: 'text' | 'password' | 'email' | 'number'
+  format: string
   placeholder?: string
   explain?: string
   class?: string
 }
 
-const props = defineProps<InputProps>()
+const props = defineProps<DateProps>()
 
 const value = defineModel({
   required: true,
+})
+
+watch(value, (newValue) => {
+  const date = new Date(`${newValue}`)
+  value.value = format(date, props.format)
 })
 </script>
 
@@ -20,12 +28,12 @@ const value = defineModel({
     <label :for="props.id" class="block mb-2 text-sm font-medium text-gray-900">
       {{ props.label }}
     </label>
-    <input
-      :type="props.type || 'text'"
+    <vue-date-picker
       :id="props.id"
-      class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 sm:text-sm"
-      :class="props.class"
       :placeholder="props.placeholder"
+      :format="props.format"
+      week-start="0"
+      locale="ko"
       v-model="value"
     />
     <div>

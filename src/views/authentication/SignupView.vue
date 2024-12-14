@@ -71,10 +71,10 @@ const passwordSync = computed(() => {
           placeholder="실명을 작성해주세요"
           v-model="userRealName"
         />
-        <input-component
+        <date-component
           id="birthday"
           label="생년월일"
-          type="text"
+          format="yyyy-MM-dd"
           placeholder="생년월일을 작성해주세요"
           explain="예) 2024-12-31"
           v-model="birthday"
