@@ -154,6 +154,22 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  const searchid = async (userRealName: string, birthday: string) => {
+    const url = '/api/user/searchid'
+    const obj = {
+      userRealName,
+      birthday,
+    }
+
+    const res = await api.post(url, obj)
+
+    if (res.data.success) {
+      alert(`회원님의 아이디는 ${res.data.responseData.username} 입니다.`)
+      moveTo('/')
+    }
+  }
+  const searchpw = async (username: string, userRealName: string, birthday: string) => {}
+
   return {
     isLoggedIn,
     isDuplicate,
@@ -164,5 +180,7 @@ export const useAuthStore = defineStore('auth', () => {
     signout,
     duplicateExists,
     signup,
+    searchid,
+    searchpw,
   }
 })

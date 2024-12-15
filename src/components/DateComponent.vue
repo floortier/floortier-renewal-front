@@ -34,6 +34,7 @@ watch(value, (newValue) => {
       :format="props.format"
       week-start="0"
       locale="ko"
+      auto-apply
       v-model="value"
     />
     <div>

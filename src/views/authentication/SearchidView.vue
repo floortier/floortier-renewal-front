@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue'
+import { ref } from 'vue'
 
+import { useAuthStore } from '@/stores/authStore'
 import { useCommonStore } from '@/stores/common/commonStore'
 
+const authStore = useAuthStore()
 const { moveTo } = useCommonStore()
+
+const { searchid } = authStore
 
 const userRealName = ref('')
 const birthday = ref('')
@@ -45,7 +49,7 @@ const birthday = ref('')
           explain="예) 2024-12-31"
           v-model="birthday"
         />
-        <button-component type="submit" text="아이디 찾기" />
+        <button-component type="submit" text="아이디 찾기" @click.prevent="searchid(userRealName, birthday)" />
       </template>
     </form-component>
   </div>
