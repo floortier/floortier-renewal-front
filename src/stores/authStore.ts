@@ -48,12 +48,13 @@ export const useAuthStore = defineStore('auth', () => {
     isLoggedIn.value = false
   }
 
-  const validate = async (
+  const signup_validate = async (
     username: string,
     password: string,
     passwordcheck: string,
     userRealName: string,
-    birthday: string
+    birthday: string,
+    email: string
   ) => {
     // 필드 확인
     const missingFields = []
@@ -63,6 +64,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!passwordcheck) missingFields.push('비밀번호 확인')
     if (!userRealName) missingFields.push('이름')
     if (!birthday) missingFields.push('생년월일')
+    if (!email) missingFields.push('이메일')
 
     if (missingFields.length > 0) {
       alert(`${missingFields.join(', ')}을(를) 입력해 주세요.`)
@@ -76,7 +78,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     // 정규식 확인
-    if (!scanRegex(username, password, birthday)) return false
+    if (!signup_regex(username, password, birthday, email)) return false
 
     // 아이디 확인
     await duplicateExists(username)
@@ -84,6 +86,25 @@ export const useAuthStore = defineStore('auth', () => {
       alert('이미 존재하는 사용자입니다.')
       return false
     }
+
+    return true
+  }
+
+  const searchid_validate = async (userRealName: string, birthday: string, email: string) => {
+    // 필드 확인
+    const missingFields = []
+
+    if (!userRealName) missingFields.push('이름')
+    if (!birthday) missingFields.push('생년월일')
+    if (!email) missingFields.push('이메일')
+
+    if (missingFields.length > 0) {
+      alert(`${missingFields.join(', ')}을(를) 입력해 주세요.`)
+      return false
+    }
+
+    // 정규식 확인
+    if (!searchid_regex(email)) return false
 
     return true
   }
@@ -102,10 +123,11 @@ export const useAuthStore = defineStore('auth', () => {
     else isDuplicate.value = false
   }
 
-  const scanRegex = (username: string, password: string, birthday: string) => {
+  const signup_regex = (username: string, password: string, birthday: string, email: string) => {
     const id_regex = /^[a-zA-Z](?=.*[a-zA-Z0-9]$)(?!.*[_-]{2})[a-zA-Z0-9_-]{2,14}[a-zA-Z0-9]$/
     const password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{8,}$/
     const birthday_regex = /^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/
+    const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
     if (!id_regex.test(username)) {
       alert(
@@ -123,6 +145,20 @@ export const useAuthStore = defineStore('auth', () => {
       return false
     } else if (!birthday_regex.test(birthday)) {
       alert('생년월일을 형식에 맞게 작성해주세요.')
+    } else if (!email_regex.test(email)) {
+      alert('이메일 형식에 맞게 작성해주세요.')
+      return false
+    } else {
+      return true
+    }
+  }
+
+  const searchid_regex = (email: string) => {
+    const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+    if (!email_regex.test(email)) {
+      alert('이메일 형식에 맞게 작성해주세요.')
+      return false
     } else {
       return true
     }
@@ -133,10 +169,11 @@ export const useAuthStore = defineStore('auth', () => {
     password: string,
     passwordcheck: string,
     userRealName: string,
-    birthday: string
+    birthday: string,
+    email: string
   ) => {
     // 유효성
-    const isValid = await validate(username, password, passwordcheck, userRealName, birthday)
+    const isValid = await signup_validate(username, password, passwordcheck, userRealName, birthday, email)
     if (!isValid) return
 
     // 회원가입절차
@@ -146,6 +183,7 @@ export const useAuthStore = defineStore('auth', () => {
     formData.append('password', password)
     formData.append('userRealName', userRealName)
     formData.append('birthday', birthday)
+    formData.append('email', email)
 
     const res = await api.post(url, formData)
 
@@ -154,12 +192,16 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const searchid = async (userRealName: string, birthday: string) => {
+  const searchid = async (userRealName: string, birthday: string, email: string) => {
     const url = '/api/user/searchid'
     const obj = {
       userRealName,
       birthday,
+      email,
     }
+
+    const isValid = await searchid_validate(userRealName, birthday, email)
+    if (!isValid) return
 
     const res = await api.post(url, obj)
 
@@ -175,7 +217,6 @@ export const useAuthStore = defineStore('auth', () => {
     isDuplicate,
     userInfo,
     cleanUserInfo,
-    scanRegex,
     signin,
     signout,
     duplicateExists,

@@ -16,6 +16,7 @@ const password = ref('')
 const passwordcheck = ref('')
 const userRealName = ref('')
 const birthday = ref('')
+const email = ref('')
 
 // getter
 const passwordSync = computed(() => {
@@ -64,6 +65,15 @@ const passwordSync = computed(() => {
           <span v-if="authStore.isDuplicate" class="text-red-600">이미 존재하는 아이디 입니다.</span>
           <span v-else class="text-green-600">사용 가능한 아이디 입니다.</span>
         </div>
+        <input-component id="password" label="비밀번호" type="password" placeholder="••••••••" v-model="password" />
+        <input-component
+          id="user-password-check"
+          label="비밀번호확인"
+          type="password"
+          placeholder="••••••••"
+          :class="passwordSync ? 'bg-green-200' : 'bg-red-200'"
+          v-model="passwordcheck"
+        />
         <input-component
           id="user-real-name"
           label="이름"
@@ -79,19 +89,12 @@ const passwordSync = computed(() => {
           explain="예) 2024-12-31"
           v-model="birthday"
         />
-        <input-component id="password" label="비밀번호" type="password" placeholder="••••••••" v-model="password" />
-        <input-component
-          id="user-password-check"
-          label="비밀번호확인"
-          type="password"
-          placeholder="••••••••"
-          :class="passwordSync ? 'bg-green-200' : 'bg-red-200'"
-          v-model="passwordcheck"
-        />
+        <input-component id="email" label="이메일" type="email" placeholder="이메일을 입력해 주세요" v-model="email" />
+
         <button-component
           type="submit"
           text="회원가입"
-          @click.prevent="authStore.signup(username, password, passwordcheck, userRealName, birthday)"
+          @click.prevent="authStore.signup(username, password, passwordcheck, userRealName, birthday, email)"
         />
       </template>
     </form-component>

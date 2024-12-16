@@ -11,6 +11,7 @@ const { searchid } = authStore
 
 const userRealName = ref('')
 const birthday = ref('')
+const email = ref('')
 </script>
 <template>
   <div class="flex flex-col items-center justify-center px-6 mx-auto h-screen w-96">
@@ -49,7 +50,8 @@ const birthday = ref('')
           explain="예) 2024-12-31"
           v-model="birthday"
         />
-        <button-component type="submit" text="아이디 찾기" @click.prevent="searchid(userRealName, birthday)" />
+        <input-component id="email" label="이메일" type="email" placeholder="이메일을 입력해 주세요" v-model="email" />
+        <button-component type="submit" text="아이디 찾기" @click.prevent="searchid(userRealName, birthday, email)" />
       </template>
     </form-component>
   </div>
