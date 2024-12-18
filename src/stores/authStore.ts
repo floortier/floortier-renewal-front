@@ -104,7 +104,27 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     // 정규식 확인
-    if (!searchid_regex(email)) return false
+    if (!search_regex(email)) return false
+
+    return true
+  }
+
+  const searchpw_validate = async (username: string, userRealName: string, birthday: string, email: string) => {
+    // 필드 확인
+    const missingFields = []
+
+    if (!username) missingFields.push('아이디')
+    if (!userRealName) missingFields.push('이름')
+    if (!birthday) missingFields.push('생년월일')
+    if (!email) missingFields.push('이메일')
+
+    if (missingFields.length > 0) {
+      alert(`${missingFields.join(', ')}을(를) 입력해 주세요.`)
+      return false
+    }
+
+    // 정규식 확인
+    if (!search_regex(email)) return false
 
     return true
   }
@@ -153,7 +173,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const searchid_regex = (email: string) => {
+  const search_regex = (email: string) => {
     const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
     if (!email_regex.test(email)) {
@@ -210,7 +230,25 @@ export const useAuthStore = defineStore('auth', () => {
       moveTo('/')
     }
   }
-  const searchpw = async (username: string, userRealName: string, birthday: string) => {}
+
+  const searchpw = async (username: string, userRealName: string, birthday: string, email: string) => {
+    const url = '/api/user/searchpw'
+    const obj = {
+      username,
+      userRealName,
+      birthday,
+      email,
+    }
+
+    const isValid = await searchpw_validate(username, userRealName, birthday, email)
+    if (!isValid) return
+
+    const res = await api.post(url, obj)
+
+    if (res.data.success) {
+      moveTo('/')
+    }
+  }
 
   return {
     isLoggedIn,
