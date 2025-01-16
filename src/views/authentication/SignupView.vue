@@ -5,12 +5,9 @@ import { useAuthStore } from '@/stores/authStore'
 import { useCommonStore } from '@/stores/common/commonStore'
 
 const authStore = useAuthStore()
-const { moveTo } = useCommonStore()
+const commonStore = useCommonStore()
 
-onBeforeMount(() => {
-  authStore.cleanUserInfo()
-})
-
+// states
 const username = ref('')
 const password = ref('')
 const passwordcheck = ref('')
@@ -21,6 +18,14 @@ const email = ref('')
 // getter
 const passwordSync = computed(() => {
   return password.value == passwordcheck.value ? true : false
+})
+
+// methods
+const { moveTo } = commonStore
+
+// lifecycle
+onBeforeMount(() => {
+  authStore.cleanUserInfo()
 })
 </script>
 

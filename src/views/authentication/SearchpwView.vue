@@ -5,14 +5,17 @@ import { useAuthStore } from '@/stores/authStore'
 import { useCommonStore } from '@/stores/common/commonStore'
 
 const authStore = useAuthStore()
-const { moveTo } = useCommonStore()
+const commonStore = useCommonStore()
 
-const { searchpw } = authStore
-
+// states
 const username = ref('')
 const userRealName = ref('')
 const birthday = ref('')
 const email = ref('')
+
+// methods
+const { searchpw } = authStore
+const { moveTo } = commonStore
 </script>
 <template>
   <div class="flex flex-col items-center justify-center px-6 mx-auto h-screen w-96">

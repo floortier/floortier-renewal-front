@@ -4,8 +4,11 @@ import { storeToRefs } from 'pinia'
 import { useDashboardStore } from '@/stores/dashboardStore'
 const dashboardStore = useDashboardStore()
 
-const { activeTap } = dashboardStore
+// states
 const { activedTap, tapList } = storeToRefs(dashboardStore)
+
+// methods
+const { activeTap } = dashboardStore
 </script>
 <template>
   <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 my-6">

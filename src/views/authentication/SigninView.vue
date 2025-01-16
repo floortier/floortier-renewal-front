@@ -5,16 +5,20 @@ import { useAuthStore } from '@/stores/authStore'
 import { useCommonStore } from '@/stores/common/commonStore'
 
 const authStore = useAuthStore()
-const { moveTo } = useCommonStore()
+const commonStore = useCommonStore()
 
+// states
+const username = ref('')
+const password = ref('')
+
+// methods
 const { cleanUserInfo, signin } = authStore
+const { moveTo } = commonStore
 
+// lifecycle
 onBeforeMount(() => {
   cleanUserInfo()
 })
-
-const username = ref('')
-const password = ref('')
 </script>
 
 <template>

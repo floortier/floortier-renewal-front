@@ -8,6 +8,7 @@ import SignupView from '@/views/authentication/SignupView.vue'
 
 import SearchidView from '@/views/authentication/SearchidView.vue'
 import SearchpwView from '@/views/authentication/SearchpwView.vue'
+import ChangepwView from '@/views/authentication/ChangepwView.vue'
 
 // main
 import DashboardView from '@/views/dashboard/DashboardView.vue'
@@ -18,7 +19,7 @@ import NotFound from '@/views/NotFound.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Main',
+    name: 'main',
     component: MainView,
     redirect: { name: 'Dashboard' },
     children: [
@@ -32,26 +33,32 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/signin',
-    name: 'Signin',
+    name: 'signin',
     component: SigninView,
     meta: { requiresAuth: false },
   },
   {
     path: '/signup',
-    name: 'Signup',
+    name: 'signup',
     component: SignupView,
     meta: { requiresAuth: false },
   },
   {
     path: '/searchid',
-    name: 'Searchid',
+    name: 'searchid',
     component: SearchidView,
     meta: { requiresAuth: false },
   },
   {
     path: '/searchpw',
-    name: 'Searchpw',
+    name: 'searchpw',
     component: SearchpwView,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: '/changepw',
+    name: 'changepw',
+    component: ChangepwView,
     meta: { requiresAuth: false },
   },
   {

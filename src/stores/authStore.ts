@@ -246,7 +246,25 @@ export const useAuthStore = defineStore('auth', () => {
     const res = await api.post(url, obj)
 
     if (res.data.success) {
-      moveTo('/')
+      userInfo.value.username = res.data.responseData.username
+      moveTo('/changepw')
+    }
+  }
+
+  const changepw = async (password: string, passwordcheck: string) => {
+    // TODO: validation
+
+    // 비밀번호 변경
+    const url = '/api/user/changepw'
+    const obj = {
+      username: userInfo.value.username,
+      password,
+    }
+
+    const res = await api.post(url, obj)
+
+    if (res.data.success) {
+      moveTo('/signin')
     }
   }
 
@@ -261,5 +279,6 @@ export const useAuthStore = defineStore('auth', () => {
     signup,
     searchid,
     searchpw,
+    changepw,
   }
 })
