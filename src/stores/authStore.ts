@@ -25,6 +25,14 @@ export const useAuthStore = defineStore('auth', () => {
     userInfo.value = { ...initUserInfo }
   }
 
+  const checkpw = (password: string, passwordcheck: string) => {
+    if (password != passwordcheck) {
+      alert('비밀번호가 일치하지 않습니다.')
+      return false
+    }
+    return true
+  }
+
   const signin = async (username: string, password: string) => {
     const url = '/api/user/signin'
     const formData = new FormData()
@@ -72,10 +80,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     // 비밀번호 확인
-    if (password != passwordcheck) {
-      alert('비밀번호가 일치하지 않습니다.')
-      return false
-    }
+    if (!checkpw(password, passwordcheck)) return false
 
     // 정규식 확인
     if (!signup_regex(username, password, birthday, email)) return false
