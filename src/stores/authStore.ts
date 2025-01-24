@@ -167,7 +167,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     // 아이디 확인
-    await duplicateExists(username)
     if (isDuplicate.value) {
       alert('이미 존재하는 사용자입니다.')
       return false
