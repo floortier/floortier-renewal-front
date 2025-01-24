@@ -25,11 +25,77 @@ export const useAuthStore = defineStore('auth', () => {
     userInfo.value = { ...initUserInfo }
   }
 
+  // 비밀번호 확인
   const checkpw = (password: string, passwordcheck: string) => {
     if (password != passwordcheck) {
       alert('비밀번호가 일치하지 않습니다.')
       return false
     }
+    return true
+  }
+
+  // 필드 확인
+  const checkfield = (...args: [string, any][]) => {
+    const missingFields: string[] = []
+
+    args.forEach(([fieldName, value]) => {
+      if (!value) {
+        missingFields.push(fieldName)
+      }
+    })
+
+    if (missingFields.length > 0) {
+      alert(`${missingFields.join(', ')}을(를) 입력해 주세요.`)
+      return false
+    }
+
+    return true
+  }
+
+  // 정규식 확인
+  const checkregex = (...args: [string, any][]) => {
+    const id_regex = /^[a-zA-Z](?=.*[a-zA-Z0-9]$)(?!.*[_-]{2})[a-zA-Z0-9_-]{2,14}[a-zA-Z0-9]$/
+    const password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{8,}$/
+    const birthday_regex = /^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/
+    const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+    for (const [fieldName, value] of args) {
+      let regex
+      let errorMessage = ''
+
+      switch (fieldName) {
+        case '아이디':
+          regex = id_regex
+          errorMessage =
+            '1. 아이디는 4~16자이며\n' +
+            '2. 영문 대소문자로 시작하고\n' +
+            '3. 숫자, 언더스코어(_), 하이픈(-)을 포함할 수 있습니다.'
+          break
+        case '비밀번호':
+          regex = password_regex
+          errorMessage =
+            '1. 비밀번호는 최소 8자 이상이어야 합니다.\n' +
+            '2. 비밀번호는 영문 대소문자, 숫자, 특수 문자를 각각 하나 이상 포함해야 합니다.\n' +
+            '3. 비밀번호에 공백 문자를 포함할 수 없습니다.'
+          break
+        case '생년월일':
+          regex = birthday_regex
+          errorMessage = '생년월일을 형식에 맞게 작성해주세요.'
+          break
+        case '이메일':
+          regex = email_regex
+          errorMessage = '이메일 형식에 맞게 작성해주세요.'
+          break
+        default:
+          continue
+      }
+
+      if (!regex.test(value)) {
+        alert(errorMessage)
+        return false
+      }
+    }
+
     return true
   }
 
@@ -56,84 +122,6 @@ export const useAuthStore = defineStore('auth', () => {
     isLoggedIn.value = false
   }
 
-  const signup_validate = async (
-    username: string,
-    password: string,
-    passwordcheck: string,
-    userRealName: string,
-    birthday: string,
-    email: string
-  ) => {
-    // 필드 확인
-    const missingFields = []
-
-    if (!username) missingFields.push('아이디')
-    if (!password) missingFields.push('비밀번호')
-    if (!passwordcheck) missingFields.push('비밀번호 확인')
-    if (!userRealName) missingFields.push('이름')
-    if (!birthday) missingFields.push('생년월일')
-    if (!email) missingFields.push('이메일')
-
-    if (missingFields.length > 0) {
-      alert(`${missingFields.join(', ')}을(를) 입력해 주세요.`)
-      return false
-    }
-
-    // 비밀번호 확인
-    if (!checkpw(password, passwordcheck)) return false
-
-    // 정규식 확인
-    if (!signup_regex(username, password, birthday, email)) return false
-
-    // 아이디 확인
-    await duplicateExists(username)
-    if (isDuplicate.value) {
-      alert('이미 존재하는 사용자입니다.')
-      return false
-    }
-
-    return true
-  }
-
-  const searchid_validate = async (userRealName: string, birthday: string, email: string) => {
-    // 필드 확인
-    const missingFields = []
-
-    if (!userRealName) missingFields.push('이름')
-    if (!birthday) missingFields.push('생년월일')
-    if (!email) missingFields.push('이메일')
-
-    if (missingFields.length > 0) {
-      alert(`${missingFields.join(', ')}을(를) 입력해 주세요.`)
-      return false
-    }
-
-    // 정규식 확인
-    if (!search_regex(email)) return false
-
-    return true
-  }
-
-  const searchpw_validate = async (username: string, userRealName: string, birthday: string, email: string) => {
-    // 필드 확인
-    const missingFields = []
-
-    if (!username) missingFields.push('아이디')
-    if (!userRealName) missingFields.push('이름')
-    if (!birthday) missingFields.push('생년월일')
-    if (!email) missingFields.push('이메일')
-
-    if (missingFields.length > 0) {
-      alert(`${missingFields.join(', ')}을(를) 입력해 주세요.`)
-      return false
-    }
-
-    // 정규식 확인
-    if (!search_regex(email)) return false
-
-    return true
-  }
-
   const duplicateExists = async (username: string) => {
     const url = `/api/user/isDuplicate`
     const obj = {
@@ -148,47 +136,6 @@ export const useAuthStore = defineStore('auth', () => {
     else isDuplicate.value = false
   }
 
-  const signup_regex = (username: string, password: string, birthday: string, email: string) => {
-    const id_regex = /^[a-zA-Z](?=.*[a-zA-Z0-9]$)(?!.*[_-]{2})[a-zA-Z0-9_-]{2,14}[a-zA-Z0-9]$/
-    const password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{8,}$/
-    const birthday_regex = /^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/
-    const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-
-    if (!id_regex.test(username)) {
-      alert(
-        '1. 아이디는 4~16자이며\n' +
-          '2. 영문 대소문자로 시작하고\n' +
-          '3. 숫자, 언더스코어(_), 하이픈(-)을 포함할 수 있습니다.'
-      )
-      return false
-    } else if (!password_regex.test(password)) {
-      alert(
-        '1. 비밀번호는 최소 8자 이상이어야 합니다.\n' +
-          '2. 비밀번호는 영문 대소문자, 숫자, 특수 문자를 각각 하나 이상 포함해야 합니다.\n' +
-          '3. 비밀번호에 공백 문자를 포함할 수 없습니다.'
-      )
-      return false
-    } else if (!birthday_regex.test(birthday)) {
-      alert('생년월일을 형식에 맞게 작성해주세요.')
-    } else if (!email_regex.test(email)) {
-      alert('이메일 형식에 맞게 작성해주세요.')
-      return false
-    } else {
-      return true
-    }
-  }
-
-  const search_regex = (email: string) => {
-    const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-
-    if (!email_regex.test(email)) {
-      alert('이메일 형식에 맞게 작성해주세요.')
-      return false
-    } else {
-      return true
-    }
-  }
-
   const signup = async (
     username: string,
     password: string,
@@ -197,9 +144,34 @@ export const useAuthStore = defineStore('auth', () => {
     birthday: string,
     email: string
   ) => {
-    // 유효성
-    const isValid = await signup_validate(username, password, passwordcheck, userRealName, birthday, email)
-    if (!isValid) return
+    // 필드 확인
+    if (
+      !checkfield(
+        ['아이디', username],
+        ['비밀번호', password],
+        ['비밀번호 확인', passwordcheck],
+        ['이름', userRealName],
+        ['생년월일', birthday],
+        ['이메일', email]
+      )
+    ) {
+      return false
+    }
+
+    // 비밀번호 확인
+    if (!checkpw(password, passwordcheck)) return false
+
+    // 정규식 확인
+    if (!checkregex(['아이디', username], ['비밀번호', password], ['생년월일', birthday], ['이메일', email])) {
+      return false
+    }
+
+    // 아이디 확인
+    await duplicateExists(username)
+    if (isDuplicate.value) {
+      alert('이미 존재하는 사용자입니다.')
+      return false
+    }
 
     // 회원가입절차
     const url = '/api/user/signup'
@@ -225,8 +197,15 @@ export const useAuthStore = defineStore('auth', () => {
       email,
     }
 
-    const isValid = await searchid_validate(userRealName, birthday, email)
-    if (!isValid) return
+    // 필드 확인
+    if (!checkfield(['이름', userRealName], ['생년월일', birthday], ['이메일', email])) {
+      return false
+    }
+
+    // 정규식 확인
+    if (!checkregex(['이메일', email])) {
+      return false
+    }
 
     const res = await api.post(url, obj)
 
@@ -245,8 +224,15 @@ export const useAuthStore = defineStore('auth', () => {
       email,
     }
 
-    const isValid = await searchpw_validate(username, userRealName, birthday, email)
-    if (!isValid) return
+    // 필드 확인
+    if (!checkfield(['아이디', username], ['이름', userRealName], ['생년월일', birthday], ['이메일', email])) {
+      return false
+    }
+
+    // 정규식 확인
+    if (!checkregex(['이메일', email])) {
+      return false
+    }
 
     const res = await api.post(url, obj)
 
@@ -257,7 +243,18 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const changepw = async (password: string, passwordcheck: string) => {
-    // TODO: validation
+    // 필드 확인
+    if (!checkfield(['비밀번호', password], ['비밀번호 확인', passwordcheck])) {
+      return false
+    }
+
+    // 비밀번호 확인
+    if (!checkpw(password, passwordcheck)) return false
+
+    // 정규식 확인
+    if (!checkregex(['비밀번호', password])) {
+      return false
+    }
 
     // 비밀번호 변경
     const url = '/api/user/changepw'
