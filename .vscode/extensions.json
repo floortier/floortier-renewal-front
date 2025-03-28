@@ -1,3 +1,17 @@
 {
-  "recommendations": ["Vue.volar"]
+  "recommendations": [
+    "vue.volar",
+    "vscjava.vscode-java-pack",
+    "vscjava.vscode-spring-boot",
+    "vscjava.vscode-gradle",
+    "vscjava.vscode-java-debug",
+    "vscjava.vscode-java-dependency",
+    "vscjava.vscode-java-test",
+    "vscjava.vscode-maven",
+    "vscjava.vscode-spring-boot-dashboard",
+    "vscjava.vscode-spring-initializr",
+    "bradlc.vscode-tailwindcss",
+    "loiane.ts-extension-pack",
+    "esbenp.prettier-vscode"
+  ]
 }
