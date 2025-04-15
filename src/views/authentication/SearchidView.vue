@@ -10,7 +10,6 @@ const commonStore = useCommonStore()
 // states
 const userRealName = ref('')
 const birthday = ref('')
-const email = ref('')
 
 // methods
 const { searchid } = authStore
@@ -53,8 +52,7 @@ const { moveTo } = commonStore
           explain="예) 2024-12-31"
           v-model="birthday"
         />
-        <input-component id="email" label="이메일" type="email" placeholder="이메일을 입력해 주세요" v-model="email" />
-        <button-component type="submit" text="아이디 찾기" @click.prevent="searchid(userRealName, birthday, email)" />
+        <button-component type="submit" text="아이디 찾기" @click.prevent="searchid(userRealName, birthday)" />
       </template>
     </form-component>
   </div>

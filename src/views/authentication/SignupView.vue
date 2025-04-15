@@ -13,7 +13,6 @@ const password = ref('')
 const passwordcheck = ref('')
 const userRealName = ref('')
 const birthday = ref('')
-const email = ref('')
 
 // getter
 const passwordSync = computed(() => {
@@ -94,12 +93,10 @@ onBeforeMount(() => {
           explain="예) 2024-12-31"
           v-model="birthday"
         />
-        <input-component id="email" label="이메일" type="email" placeholder="이메일을 입력해 주세요" v-model="email" />
-
         <button-component
           type="submit"
           text="회원가입"
-          @click.prevent="authStore.signup(username, password, passwordcheck, userRealName, birthday, email)"
+          @click.prevent="authStore.signup(username, password, passwordcheck, userRealName, birthday)"
         />
       </template>
     </form-component>

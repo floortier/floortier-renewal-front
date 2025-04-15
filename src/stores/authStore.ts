@@ -57,7 +57,6 @@ export const useAuthStore = defineStore('auth', () => {
     const id_regex = /^[a-zA-Z](?=.*[a-zA-Z0-9]$)(?!.*[_-]{2})[a-zA-Z0-9_-]{2,14}[a-zA-Z0-9]$/
     const password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?!.*\s)[A-Za-z\d!@#$%^&*]{8,}$/
     const birthday_regex = /^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/
-    const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
     for (const [fieldName, value] of args) {
       let regex
@@ -81,10 +80,6 @@ export const useAuthStore = defineStore('auth', () => {
         case '생년월일':
           regex = birthday_regex
           errorMessage = '생년월일을 형식에 맞게 작성해주세요.'
-          break
-        case '이메일':
-          regex = email_regex
-          errorMessage = '이메일 형식에 맞게 작성해주세요.'
           break
         default:
           continue
@@ -141,8 +136,7 @@ export const useAuthStore = defineStore('auth', () => {
     password: string,
     passwordcheck: string,
     userRealName: string,
-    birthday: string,
-    email: string
+    birthday: string
   ) => {
     // 필드 확인
     if (
@@ -151,8 +145,7 @@ export const useAuthStore = defineStore('auth', () => {
         ['비밀번호', password],
         ['비밀번호 확인', passwordcheck],
         ['이름', userRealName],
-        ['생년월일', birthday],
-        ['이메일', email]
+        ['생년월일', birthday]
       )
     ) {
       return false
@@ -162,7 +155,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!checkpw(password, passwordcheck)) return false
 
     // 정규식 확인
-    if (!checkregex(['아이디', username], ['비밀번호', password], ['생년월일', birthday], ['이메일', email])) {
+    if (!checkregex(['아이디', username], ['비밀번호', password], ['생년월일', birthday])) {
       return false
     }
 
@@ -179,7 +172,6 @@ export const useAuthStore = defineStore('auth', () => {
     formData.append('password', password)
     formData.append('userRealName', userRealName)
     formData.append('birthday', birthday)
-    formData.append('email', email)
 
     const res = await api.post(url, formData)
 
@@ -188,21 +180,15 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const searchid = async (userRealName: string, birthday: string, email: string) => {
+  const searchid = async (userRealName: string, birthday: string) => {
     const url = '/api/user/searchid'
     const obj = {
       userRealName,
       birthday,
-      email,
     }
 
     // 필드 확인
-    if (!checkfield(['이름', userRealName], ['생년월일', birthday], ['이메일', email])) {
-      return false
-    }
-
-    // 정규식 확인
-    if (!checkregex(['이메일', email])) {
+    if (!checkfield(['이름', userRealName], ['생년월일', birthday])) {
       return false
     }
 
@@ -214,22 +200,16 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const searchpw = async (username: string, userRealName: string, birthday: string, email: string) => {
+  const searchpw = async (username: string, userRealName: string, birthday: string) => {
     const url = '/api/user/searchpw'
     const obj = {
       username,
       userRealName,
       birthday,
-      email,
     }
 
     // 필드 확인
-    if (!checkfield(['아이디', username], ['이름', userRealName], ['생년월일', birthday], ['이메일', email])) {
-      return false
-    }
-
-    // 정규식 확인
-    if (!checkregex(['이메일', email])) {
+    if (!checkfield(['아이디', username], ['이름', userRealName], ['생년월일', birthday])) {
       return false
     }
 

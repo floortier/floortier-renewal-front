@@ -11,7 +11,6 @@ const commonStore = useCommonStore()
 const username = ref('')
 const userRealName = ref('')
 const birthday = ref('')
-const email = ref('')
 
 // methods
 const { searchpw } = authStore
@@ -55,11 +54,10 @@ const { moveTo } = commonStore
           explain="예) 2024-12-31"
           v-model="birthday"
         />
-        <input-component id="email" label="이메일" type="email" placeholder="이메일을 입력해 주세요" v-model="email" />
         <button-component
           type="submit"
           text="비밀번호 찾기"
-          @click.prevent="searchpw(username, userRealName, birthday, email)"
+          @click.prevent="searchpw(username, userRealName, birthday)"
         />
       </template>
     </form-component>

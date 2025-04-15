@@ -19,7 +19,12 @@ api.interceptors.response.use(
     return res
   },
   (err) => {
-    if (err.response.data.message) alert(err.response.data.message)
+    console.error(err)
+    if (err.response.data.message) {
+      alert(err.response.data.message)
+    } else {
+      alert(err.response.data.error)
+    }
     return Promise.reject(err)
   }
 )
