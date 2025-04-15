@@ -96,11 +96,13 @@ export const useAuthStore = defineStore('auth', () => {
 
   const signin = async (username: string, password: string) => {
     const url = '/api/user/signin'
-    const formData = new FormData()
-    formData.append('username', username)
-    formData.append('password', password)
+    const config = { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, withCredentials: true }
 
-    const res = await api.post(url, formData)
+    const params = new URLSearchParams()
+    params.append('username', username)
+    params.append('password', password)
+
+    const res = await api.post(url, params, config)
 
     if (res.data.success) {
       userInfo.value.userSeq = res.data.responseData.userInfo.userSeq

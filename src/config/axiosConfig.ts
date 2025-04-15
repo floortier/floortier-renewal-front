@@ -10,6 +10,8 @@ const api = axios.create({
   },
 })
 
+axios.defaults.withCredentials = true
+
 // 요청 인터셉터
 
 // 응답 인터셉터
@@ -23,7 +25,7 @@ api.interceptors.response.use(
     if (err.response.data.message) {
       alert(err.response.data.message)
     } else {
-      alert(err.response.data.error)
+      alert(err.message)
     }
     return Promise.reject(err)
   }
