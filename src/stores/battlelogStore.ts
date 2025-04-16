@@ -32,8 +32,8 @@ export const useBattlelogStore = defineStore('battlelog', () => {
     try {
       const url = '/api/battlelog/list'
       const response = await api.get(url)
+
       battlelogs.value = response.data.responseData.battlelogList
-      console.log(battlelogs.value)
     } catch (err) {
       console.error('Error fetching battle log:', err)
     }
