@@ -9,19 +9,19 @@ const authStore = useAuthStore()
 const commonStore = useCommonStore()
 
 // states
-const { changepw } = authStore
-const { moveTo } = commonStore
+const { userInfo } = storeToRefs(authStore)
 
 const password = ref('')
 const passwordcheck = ref('')
+
+// methods
+const { changepw } = authStore
+const { moveTo } = commonStore
 
 // getter
 const passwordSync = computed(() => {
   return password.value == passwordcheck.value ? true : false
 })
-
-// methods
-const { userInfo } = storeToRefs(authStore)
 
 // lifecycle
 onBeforeMount(() => {
