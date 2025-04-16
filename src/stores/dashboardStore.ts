@@ -7,7 +7,8 @@ import { useCommonStore } from '@/stores/common/commonStore'
 
 export const useDashboardStore = defineStore('dashboard', () => {
   // 외부 함수
-  const { moveTo } = useCommonStore()
+  const commonStore = useCommonStore()
+  const { moveTo } = commonStore
 
   // state
   const activedTap = ref('race')

@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
 import api from '@/config/axiosConfig'
 
-import { useCommonStore } from '@/stores/common/commonStore'
 import { useAuthStore } from '@/stores/authStore'
+import { useCommonStore } from '@/stores/common/commonStore'
 
 export const useUserStore = defineStore('user', () => {
   // 외부 함수
@@ -14,8 +14,8 @@ export const useUserStore = defineStore('user', () => {
   // init
   const initUserInfo = {
     userSeq: '',
-    userId: '',
-    userName: '',
+    username: '',
+    nickname: '',
     userRace: '',
     userTier: '',
   }
@@ -32,7 +32,7 @@ export const useUserStore = defineStore('user', () => {
     const url = '/api/user/profile/save'
     const obj = {
       userSeq: authStore.userInfo.userSeq,
-      userName: userInfo.value.userName,
+      username: userInfo.value.username,
       userRace: userInfo.value.userRace,
       userTier: userInfo.value.userTier,
     }
