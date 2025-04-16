@@ -115,8 +115,31 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  const checkSession = async () => {
+    const url = '/api/user/check'
+    const config = { withCredentials: true }
+
+    try {
+      const res = await api.get(url, config)
+
+      if (res.data.success) {
+        isLoggedIn.value = true
+        userInfo.value.userSeq = res.data.responseData.userSeq
+        userInfo.value.username = res.data.responseData.username
+      } else {
+        isLoggedIn.value = false
+        cleanUserInfo()
+      }
+    } catch (err) {
+      console.error('Error checking connection:', err)
+      isLoggedIn.value = false
+      cleanUserInfo()
+    }
+  }
+
   const signout = () => {
     isLoggedIn.value = false
+    cleanUserInfo()
   }
 
   const duplicateExists = async (username: string) => {
@@ -257,6 +280,7 @@ export const useAuthStore = defineStore('auth', () => {
     userInfo,
     cleanUserInfo,
     signin,
+    checkSession,
     signout,
     duplicateExists,
     signup,
