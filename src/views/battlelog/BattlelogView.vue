@@ -2,24 +2,43 @@
 import { onBeforeMount, ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 
+import DateInput from '@/components/DateComponent.vue'
+
 import { useBattlelogStore } from '@/stores/battlelogStore'
 import { pagination } from '@/stores/common/pagination'
 const battlelogStore = useBattlelogStore()
 
+// states
 const { battlelogs } = storeToRefs(battlelogStore)
 const filter = ref('')
-
-const { fetchBattlelogs } = battlelogStore
-
-const filteredLogs = computed(() => {
-  return battlelogs.value.filter((log) =>
-    Object.values(log).some((value) => String(value).toLowerCase().includes(filter.value.toLowerCase()))
-  )
-})
+const period = ref<string[]>([])
 
 const raceimages = import.meta.glob('@/assets/images/logo_*.png', { eager: true, as: 'url' })
 const tierimages = import.meta.glob('@/assets/images/tier_*.png', { eager: true, as: 'url' })
 
+// actions
+const { fetchBattlelogs } = battlelogStore
+
+// getters
+const filteredLogs = computed(() => {
+  return battlelogs.value.filter((log) => {
+    const matchText = Object.values(log).some((value) =>
+      String(value).toLowerCase().includes(filter.value.toLowerCase())
+    )
+
+    const date = new Date(log.battleDate.split('T')[0])
+
+    const start = Array.isArray(period.value) && period.value[0]
+    const end = Array.isArray(period.value) && period.value[1]
+
+    const afterStart = start ? new Date(start) <= date : true
+    const beforeEnd = end ? date <= new Date(end) : true
+
+    return matchText && afterStart && beforeEnd
+  })
+})
+
+// methods
 const getRaceImage = (race: string) => {
   return raceimages[`/src/assets/images/logo_${race.toLowerCase()}.png`] as string
 }
@@ -45,45 +64,61 @@ onBeforeMount(async () => {
 <template>
   <div class="space-y-4 min-w-[1200px] py-20">
     <div class="flex justify-between items-center">
-      <input
-        v-model="filter"
-        type="text"
-        placeholder="닉네임 또는 맵 검색"
-        class="px-4 py-2 border rounded shadow-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
+      <div class="flex items-center gap-2">
+        <input
+          v-model="filter"
+          type="text"
+          placeholder="닉네임 또는 맵 검색"
+          class="h-[42px] px-4 py-2 border rounded shadow-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
 
-      <button class="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-700" @click="onRegisterBattlelog">
-        + 전적 등록
-      </button>
+        <DateInput id="period" v-model="period" format="yyyy-MM-dd" placeholder="기간 선택" range class="h-[100%]" />
+      </div>
+
+      <button class="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-700">+ 전적 등록</button>
     </div>
 
     <div class="w-full">
-      <div class="flex text-sm text-gray-700 bg-gray-50 text-center font-semibold py-3">
-        <div class="w-2/12">날짜</div>
-        <div class="w-3/12">맵</div>
-        <div class="w-1/12">승자</div>
-        <div class="w-1/12">종족/티어</div>
-        <div class="w-1/12">패자</div>
-        <div class="w-1/12">종족/티어</div>
-        <div class="w-1/12">작성자</div>
-        <div class="w-2/12">시즌</div>
+      <!-- 헤더 -->
+      <div
+        class="grid grid-cols-[110px_200px_minmax(60px,_1fr)_120px_minmax(60px,_1fr)_120px_120px_120px] text-sm font-semibold bg-gray-50 text-gray-700 text-center py-3"
+      >
+        <div>날짜</div>
+        <div>맵</div>
+        <div><span class="text-yellow-500">👑</span> 승자</div>
+        <div>종족/티어</div>
+        <div><span class="text-gray-400">🏳️</span> 패자</div>
+        <div>종족/티어</div>
+        <div>작성자</div>
+        <div>시즌</div>
       </div>
 
-      <div v-for="(battlelog, index) in paginatedLogs" :key="index" class="flex items-center text-center text-sm py-3">
-        <div class="w-2/12">{{ battlelog.battleDate.split('T')[0] }}</div>
-        <div class="w-3/12">{{ battlelog.mapName }}</div>
-        <div class="w-1/12">{{ battlelog.winnerName }}</div>
-        <div class="w-1/12 flex justify-center gap-2">
+      <!-- 내용 -->
+      <div
+        v-for="(battlelog, index) in paginatedLogs"
+        :key="index"
+        class="grid grid-cols-[110px_200px_minmax(60px,_1fr)_120px_minmax(60px,_1fr)_120px_120px_120px] text-sm text-center items-center py-3 even:bg-gray-50"
+      >
+        <div>{{ battlelog.battleDate.split('T')[0] }}</div>
+        <div>{{ battlelog.mapName }}</div>
+        <div class="flex justify-center items-center gap-1">
+          <span class="text-yellow-500 text-sm">👑</span>
+          <span>{{ battlelog.winnerName }}</span>
+        </div>
+        <div class="flex justify-center gap-2">
           <img class="w-8 h-8" :src="getRaceImage(battlelog.winnerRace)" />
           <img class="w-8 h-8" :src="getTierImage(battlelog.winnerTier)" />
         </div>
-        <div class="w-1/12">{{ battlelog.loserName }}</div>
-        <div class="w-1/12 flex justify-center gap-2">
+        <div class="flex justify-center items-center gap-1">
+          <span class="text-gray-400 text-sm">🏳️</span>
+          <span>{{ battlelog.loserName }}</span>
+        </div>
+        <div class="flex justify-center gap-2">
           <img class="w-8 h-8" :src="getRaceImage(battlelog.loserRace)" />
           <img class="w-8 h-8" :src="getTierImage(battlelog.loserTier)" />
         </div>
-        <div class="w-1/12">{{ battlelog.createdBy }}</div>
-        <div class="w-2/12">{{ battlelog.seasonName }}</div>
+        <div>{{ battlelog.createdBy }}</div>
+        <div>{{ battlelog.seasonName }}</div>
       </div>
     </div>
 
