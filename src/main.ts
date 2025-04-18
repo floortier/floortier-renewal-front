@@ -13,6 +13,7 @@ import FormComponent from '@/components/FormComponent.vue'
 import InputComponent from '@/components/InputComponent.vue'
 import DateComponent from '@/components/DateComponent.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
+import PaginationComponent from '@/components/PaginationComponent.vue'
 
 import App from './App.vue'
 
@@ -44,5 +45,6 @@ app.component('FormComponent', FormComponent)
 app.component('InputComponent', InputComponent)
 app.component('DateComponent', DateComponent)
 app.component('ButtonComponent', ButtonComponent)
+app.component('PaginationComponent', PaginationComponent)
 
 app.mount('#app')

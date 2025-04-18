@@ -25,7 +25,7 @@ interface BattleInfo {
   isWin?: boolean
 }
 
-export const useBattlelogStore = defineStore('battlelog', () => {
+export const useBattlelogStore = defineStore('battlelogStore', () => {
   // 외부 함수
   const commonStore = useCommonStore()
   const { moveTo } = commonStore

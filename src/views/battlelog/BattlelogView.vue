@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import { onBeforeMount, ref, computed } from 'vue'
+import { onBeforeMount, ref, computed, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-
-import DateInput from '@/components/DateComponent.vue'
-import PaginationComponent from '@/components/PaginationComponent.vue'
 
 import { useBattlelogStore } from '@/stores/battlelogStore'
 import { useUserStore } from '@/stores/userStore'
@@ -13,6 +10,8 @@ const userStore = useUserStore()
 
 // states
 const { battlelogs, battleInfo } = storeToRefs(battlelogStore)
+const { users } = storeToRefs(userStore)
+
 const filter = ref('')
 const period = ref<string[]>([])
 
@@ -27,6 +26,7 @@ const tierimages = import.meta.glob('@/assets/images/tier_*.png', { eager: true,
 
 // actions
 const { fetchBattlelogs } = battlelogStore
+const { fetchUserList } = userStore
 
 // getters
 const filteredLogs = computed(() => {
@@ -47,6 +47,13 @@ const filteredLogs = computed(() => {
   })
 })
 
+const filteredUsers = computed(() => users.value.filter((u) => u.nickname.includes(userfilter.value)))
+
+watch(showRegisterModal, async () => {
+  battleInfo.value = {}
+  await fetchUserList()
+})
+
 // methods
 const getRaceImage = (race: string) => {
   return raceimages[`/src/assets/images/logo_${race.toLowerCase()}.png`] as string
@@ -65,6 +72,10 @@ const {
   goToLast,
 } = pagination(filteredLogs, 10)
 
+const selectOpponent = (seq) => {
+  battleInfo.value.opponentSeq = seq
+}
+
 onBeforeMount(async () => {
   await fetchBattlelogs()
 })
@@ -77,7 +88,14 @@ onBeforeMount(async () => {
       <div class="flex items-center gap-2">
         <input-component type="text" class="w-[200px]" v-model="filter" placeholder="닉네임 또는 맵 검색" />
 
-        <DateInput range id="period" class="w-[250px]" v-model="period" format="yyyy-MM-dd" placeholder="기간 선택" />
+        <date-component
+          range
+          id="period"
+          class="w-[250px]"
+          v-model="period"
+          format="yyyy-MM-dd"
+          placeholder="기간 선택"
+        />
       </div>
 
       <div>
@@ -113,7 +131,6 @@ onBeforeMount(async () => {
         <div>{{ battlelog.battleDate.split('T')[0] }}</div>
         <div>{{ battlelog.mapName }}</div>
         <div class="flex justify-center items-center gap-1">
-          <span class="text-sm text-yellow-500">👑</span>
           <span>{{ battlelog.winnerName }}</span>
         </div>
         <div class="flex justify-center gap-2">
@@ -121,7 +138,6 @@ onBeforeMount(async () => {
           <img class="w-8 h-8" :src="getTierImage(battlelog.winnerTier)" />
         </div>
         <div class="flex justify-center items-center gap-1">
-          <span class="text-sm text-gray-400">🏳️</span>
           <span>{{ battlelog.loserName }}</span>
         </div>
         <div class="flex justify-center gap-2">
@@ -145,11 +161,17 @@ onBeforeMount(async () => {
 
   <!-- 모달 -->
   <div v-if="showRegisterModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-    <div class="w-[600px] p-6 bg-white rounded-lg shadow-lg">
-      <h2 class="text-lg font-semibold mb-4">전적 등록 ({{ registerStep }}/4)</h2>
+    <div class="relative w-[600px] p-6 bg-white rounded-lg shadow-lg">
+      <button-component
+        text="&times;"
+        class="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
+        @click="showRegisterModal = false"
+      />
+
+      <h2 class="text-lg font-semibold mt-2 mb-4">전적 등록 ({{ registerStep }}/4)</h2>
 
       <div v-if="registerStep === 1">
-        <DateInput
+        <date-component
           id="register-date"
           v-model="battleInfo.battleDate"
           format="yyyy-MM-dd HH:mm:ss"
@@ -161,27 +183,56 @@ onBeforeMount(async () => {
         <input-component
           class="w-full px-3 py-3 mb-3 border rounded"
           v-model="userfilter"
-          placeholder="상대 닉네임 검색"
+          placeholder="상대 닉네임을 검색"
         />
-        <select v-model="battleInfo.opponentSeq" class="w-full px-3 py-2 border rounded">
-          <option
-            v-for="user in users.filter((n) => n.includes(userfilter))"
+
+        <div class="space-y-2">
+          <div
+            v-for="user in filteredUsers.slice(0, 5)"
             :key="user.floorUserSeq"
-            :value="user.floorUserSeq"
+            class="flex gap-2 items-center"
+            :class="[
+              'px-4 py-2 border rounded cursor-pointer',
+              battleInfo.opponentSeq === user.floorUserSeq ? 'bg-blue-100 border-blue-400' : 'hover:bg-gray-100',
+            ]"
+            @click="selectOpponent(user.floorUserSeq)"
           >
-            {{ user.nickname }}
-          </option>
-        </select>
+            <div>
+              <img class="w-8 h-8" :src="getRaceImage(user.userRace)" />
+            </div>
+            <div>
+              <img class="w-8 h-8" :src="getTierImage(user.userTier)" />
+            </div>
+            <div>
+              <span>
+                {{ user.nickname }}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div v-else-if="registerStep === 3">
-        <div class="flex gap-4">
-          <label class="flex items-center gap-1">
-            <input-component type="radio" v-model="battleInfo.isWin" :value="true" /> 내가 승자
-          </label>
-          <label class="flex items-center gap-1">
-            <input-component type="radio" v-model="battleInfo.isWin" :value="false" /> 내가 패자
-          </label>
+        <div class="flex justify-center gap-4">
+          <div
+            class="cursor-pointer border-2 rounded p-1"
+            :class="
+              battleInfo.isWin === true ? 'animate-smallBounce' : 'transition-transform duration-300 hover:scale-110'
+            "
+            @click="battleInfo.isWin = true"
+          >
+            <img src="/src/assets/images/winner.png" alt="내가 승자" class="object-cover" />
+          </div>
+
+          <div
+            class="cursor-pointer border-2 rounded p-1"
+            :class="
+              battleInfo.isWin === false ? 'animate-smallBounce' : 'transition-transform duration-300 hover:scale-110'
+            "
+            @click="battleInfo.isWin = false"
+          >
+            <img src="/src/assets/images/loser.png" alt="내가 패자" class="object-cover" />
+          </div>
         </div>
       </div>
 

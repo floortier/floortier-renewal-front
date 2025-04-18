@@ -5,7 +5,7 @@ import api from '@/config/axiosConfig'
 
 import { useCommonStore } from '@/stores/common/commonStore'
 
-export const useAuthStore = defineStore('auth', () => {
+export const useAuthStore = defineStore('authStore', () => {
   // 외부 함수
   const { moveTo } = useCommonStore()
 

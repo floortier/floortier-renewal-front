@@ -1,7 +1,7 @@
 <script setup lang="ts">
 interface InputProps {
-  id: string
-  label: string
+  id?: string
+  label?: string
   type?: 'text' | 'password' | 'email' | 'number'
   placeholder?: string
   explain?: string

@@ -6,7 +6,7 @@ import api from '@/config/axiosConfig'
 import { useAuthStore } from '@/stores/authStore'
 import { useCommonStore } from '@/stores/common/commonStore'
 
-export const useUserStore = defineStore('user', () => {
+export const useUserStore = defineStore('userStore', () => {
   // 외부 함수
   const { moveTo } = useCommonStore()
   const authStore = useAuthStore()
@@ -23,24 +23,26 @@ export const useUserStore = defineStore('user', () => {
 
   // state
   const userInfo = ref({ ...initUserInfo })
+  const users = ref([])
 
   // actions
   const cleanUserInfo = () => {
     userInfo.value = { ...initUserInfo }
   }
 
-  const getUserList = async () => {
+  const fetchUserList = async () => {
     const url = '/api/user/list'
     const res = await api.get(url)
 
     if (res.data.success) {
-      userInfo.value = res.data.responseData.userList
+      users.value = res.data.responseData.userList
     }
   }
 
   return {
     userInfo,
+    users,
     cleanUserInfo,
-    getUserList,
+    fetchUserList,
   }
 })

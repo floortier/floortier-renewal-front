@@ -5,7 +5,7 @@ import api from '@/config/axiosConfig'
 
 import { useCommonStore } from '@/stores/common/commonStore'
 
-export const useDashboardStore = defineStore('dashboard', () => {
+export const useDashboardStore = defineStore('dashboardStore', () => {
   // 외부 함수
   const commonStore = useCommonStore()
   const { moveTo } = commonStore
