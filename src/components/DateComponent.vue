@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { watch } from 'vue'
-import { format } from '@/stores/common/formatter'
+import { format } from 'date-fns'
 
 interface DateProps {
   id: string
@@ -34,8 +34,8 @@ watch(value, (newValue) => {
 </script>
 
 <template>
-  <div class="flex h-[100%] justify-center items-center">
-    <label :for="props.id" class="block mb-2 text-sm font-medium text-gray-900">
+  <div class="flex flex-col h-[100%] justify-center items-start">
+    <label v-if="props.label" :for="props.id" class="block mb-2 text-sm font-medium text-gray-900">
       {{ props.label }}
     </label>
     <vue-date-picker
@@ -43,7 +43,6 @@ watch(value, (newValue) => {
       :class="props.class"
       :placeholder="props.placeholder"
       :format="props.format"
-      :model-type="'yyyy-MM-dd'"
       :range="props.range"
       week-start="0"
       locale="ko"

@@ -15,8 +15,14 @@ interface Battlelog {
   loserRace: string
   loserTier: string
   seasonName: string
-  createdAt: string
   createdBy: string
+}
+
+interface BattleInfo {
+  battleDate?: string
+  mapSeq?: number
+  opponentSeq?: number
+  isWin?: boolean
 }
 
 export const useBattlelogStore = defineStore('battlelog', () => {
@@ -26,6 +32,7 @@ export const useBattlelogStore = defineStore('battlelog', () => {
 
   // state
   const battlelogs = ref<Battlelog[]>([])
+  const battleInfo = ref<BattleInfo>({})
 
   // actions
   const fetchBattlelogs = async () => {
@@ -43,6 +50,7 @@ export const useBattlelogStore = defineStore('battlelog', () => {
 
   return {
     battlelogs,
+    battleInfo,
     fetchBattlelogs,
   }
 })

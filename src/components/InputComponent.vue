@@ -17,7 +17,7 @@ const value = defineModel({
 
 <template>
   <div>
-    <label :for="props.id" class="block mb-2 text-sm font-medium text-gray-900">
+    <label v-if="props.label" :for="props.id" class="block mb-2 text-sm font-medium text-gray-900">
       {{ props.label }}
     </label>
     <input

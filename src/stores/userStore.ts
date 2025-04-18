@@ -14,6 +14,7 @@ export const useUserStore = defineStore('user', () => {
   // init
   const initUserInfo = {
     userSeq: '',
+    floorUserSeq: '',
     username: '',
     nickname: '',
     userRace: '',
@@ -28,25 +29,18 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value = { ...initUserInfo }
   }
 
-  const saveProfile = async () => {
-    const url = '/api/user/profile/save'
-    const obj = {
-      userSeq: authStore.userInfo.userSeq,
-      username: userInfo.value.username,
-      userRace: userInfo.value.userRace,
-      userTier: userInfo.value.userTier,
-    }
-
-    const res = await api.post(url, obj)
+  const getUserList = async () => {
+    const url = '/api/user/list'
+    const res = await api.get(url)
 
     if (res.data.success) {
-      moveTo('/')
+      userInfo.value = res.data.responseData.userList
     }
   }
 
   return {
     userInfo,
     cleanUserInfo,
-    saveProfile,
+    getUserList,
   }
 })
