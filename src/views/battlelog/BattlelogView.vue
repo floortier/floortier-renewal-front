@@ -4,13 +4,18 @@ import { storeToRefs } from 'pinia'
 
 import { useBattlelogStore } from '@/stores/battlelogStore'
 import { useUserStore } from '@/stores/userStore'
+import { useMapStore } from '@/stores/mapStore'
 import { pagination } from '@/stores/common/pagination'
 const battlelogStore = useBattlelogStore()
 const userStore = useUserStore()
+const mapStore = useMapStore()
 
 // states
+const ADM_SERVER = import.meta.env.VITE_ADM_SERVER
+
 const { battlelogs, battleInfo } = storeToRefs(battlelogStore)
 const { users } = storeToRefs(userStore)
+const { maps } = storeToRefs(mapStore)
 
 const filter = ref('')
 const period = ref<string[]>([])
@@ -27,6 +32,7 @@ const tierimages = import.meta.glob('@/assets/images/tier_*.png', { eager: true,
 // actions
 const { fetchBattlelogs } = battlelogStore
 const { fetchUserList } = userStore
+const { fetchMapList } = mapStore
 
 // getters
 const filteredLogs = computed(() => {
@@ -48,10 +54,26 @@ const filteredLogs = computed(() => {
 })
 
 const filteredUsers = computed(() => users.value.filter((u) => u.nickname.includes(userfilter.value)))
+const filteredMaps = computed(() => {
+  const filter = mapfilter.value.toLowerCase()
+
+  return maps.value.filter((map) => {
+    const nameMatch = map.name.toLowerCase().includes(filter)
+
+    const keywordsArray = map.keyword ? map.keyword.split(',').map((k) => k.trim().toLowerCase()) : []
+
+    const keywordMatch = keywordsArray.some((keyword) => keyword.includes(filter))
+
+    return nameMatch || keywordMatch
+  })
+})
 
 watch(showRegisterModal, async () => {
-  battleInfo.value = {}
-  await fetchUserList()
+  if (showRegisterModal.value) {
+    battleInfo.value = {}
+    if (!users.value.length) await fetchUserList()
+    if (!maps.value.length) await fetchMapList()
+  }
 })
 
 // methods
@@ -76,6 +98,15 @@ const selectOpponent = (seq) => {
   battleInfo.value.opponentSeq = seq
 }
 
+const selectMap = (seq) => {
+  battleInfo.value.mapSeq = seq
+}
+
+const saveBattlelog = () => {
+  console.log(battleInfo.value)
+}
+
+// life-cycle
 onBeforeMount(async () => {
   await fetchBattlelogs()
 })
@@ -165,7 +196,7 @@ onBeforeMount(async () => {
       <button-component
         text="&times;"
         class="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
-        @click="showRegisterModal = false"
+        @click.prevent="showRegisterModal = false"
       />
 
       <h2 class="text-lg font-semibold mt-2 mb-4">전적 등록 ({{ registerStep }}/4)</h2>
@@ -183,7 +214,7 @@ onBeforeMount(async () => {
         <input-component
           class="w-full px-3 py-3 mb-3 border rounded"
           v-model="userfilter"
-          placeholder="상대 닉네임을 검색"
+          placeholder="상대 닉네임 검색"
         />
 
         <div class="space-y-2">
@@ -195,7 +226,7 @@ onBeforeMount(async () => {
               'px-4 py-2 border rounded cursor-pointer',
               battleInfo.opponentSeq === user.floorUserSeq ? 'bg-blue-100 border-blue-400' : 'hover:bg-gray-100',
             ]"
-            @click="selectOpponent(user.floorUserSeq)"
+            @click.prevent="selectOpponent(user.floorUserSeq)"
           >
             <div>
               <img class="w-8 h-8" :src="getRaceImage(user.userRace)" />
@@ -219,7 +250,7 @@ onBeforeMount(async () => {
             :class="
               battleInfo.isWin === true ? 'animate-smallBounce' : 'transition-transform duration-300 hover:scale-110'
             "
-            @click="battleInfo.isWin = true"
+            @click.prevent="battleInfo.isWin = true"
           >
             <img src="/src/assets/images/winner.png" alt="내가 승자" class="object-cover" />
           </div>
@@ -229,7 +260,7 @@ onBeforeMount(async () => {
             :class="
               battleInfo.isWin === false ? 'animate-smallBounce' : 'transition-transform duration-300 hover:scale-110'
             "
-            @click="battleInfo.isWin = false"
+            @click.prevent="battleInfo.isWin = false"
           >
             <img src="/src/assets/images/loser.png" alt="내가 패자" class="object-cover" />
           </div>
@@ -237,19 +268,62 @@ onBeforeMount(async () => {
       </div>
 
       <div v-else-if="registerStep === 4">
-        <input-component class="w-full px-3 py-3 mb-3 border rounded" v-model="mapfilter" placeholder="맵 검색" />
+        <input-component
+          class="w-full px-3 py-3 mb-3 border rounded"
+          v-model="mapfilter"
+          placeholder="맵 이름 혹은 맵 키워드 검색"
+        />
+
+        <div class="space-y-2">
+          <div
+            v-for="map in filteredMaps.slice(0, 5)"
+            :key="map.mapSeq"
+            class="flex gap-2 items-center"
+            :class="[
+              'px-4 py-2 border rounded cursor-pointer',
+              battleInfo.mapSeq === map.mapSeq ? 'bg-blue-100 border-blue-400' : 'hover:bg-gray-100',
+            ]"
+            @click.prevent="selectMap(map.mapSeq)"
+          >
+            <div>
+              <img class="w-24 h-24" :src="`${ADM_SERVER}${map.imageUrl}`" />
+            </div>
+            <div class="flex flex-col">
+              <div>
+                <span>
+                  {{ map.name }}
+                </span>
+              </div>
+              <div class="flex gap-1 mt-1">
+                <div
+                  class="flex justify-center items-center px-2 p-1 text-xs text-white font-bold bg-indigo-500 rounded-lg"
+                  v-for="keyword in map.keyword.split(',')"
+                >
+                  #{{ keyword }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="flex justify-end gap-4 mt-6">
         <button-component
           :text="registerStep === 1 ? '닫기' : '이전'"
           class="px-6 py-2 border rounded hover:bg-gray-100"
-          @click="registerStep > 1 ? registerStep-- : (showRegisterModal = false)"
+          @click.prevent="registerStep > 1 ? registerStep-- : (showRegisterModal = false)"
         />
         <button-component
-          :text="registerStep === 4 ? '등록' : '다음'"
+          v-if="registerStep < 4"
+          text="다음"
           class="px-6 py-2 bg-blue-600 rounded text-white hover:bg-blue-700"
-          @click="registerStep < 4 ? registerStep++ : (showRegisterModal = false)"
+          @click.prevent="registerStep++"
+        />
+        <button-component
+          v-if="registerStep === 4"
+          text="등록"
+          class="px-6 py-2 bg-blue-600 rounded text-white hover:bg-blue-700"
+          @click.prevent="saveBattlelog"
         />
       </div>
     </div>
