@@ -96,7 +96,7 @@ export const useAuthStore = defineStore('authStore', () => {
 
   const signin = async (username: string, password: string) => {
     const url = '/api/user/signin'
-    const config = { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, withCredentials: true }
+    const config = { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
 
     const params = new URLSearchParams()
     params.append('username', username)
@@ -117,10 +117,9 @@ export const useAuthStore = defineStore('authStore', () => {
 
   const checkSession = async () => {
     const url = '/api/user/check'
-    const config = { withCredentials: true }
 
     try {
-      const res = await api.get(url, config)
+      const res = await api.get(url)
 
       if (res.data.success) {
         isLoggedIn.value = true

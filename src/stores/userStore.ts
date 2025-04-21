@@ -6,6 +6,13 @@ import api from '@/config/axiosConfig'
 import { useAuthStore } from '@/stores/authStore'
 import { useCommonStore } from '@/stores/common/commonStore'
 
+interface User {
+  floorUserSeq: number
+  nickname: string
+  userRace: string
+  userTier: string
+}
+
 export const useUserStore = defineStore('userStore', () => {
   // 외부 함수
   const { moveTo } = useCommonStore()
@@ -23,7 +30,7 @@ export const useUserStore = defineStore('userStore', () => {
 
   // state
   const userInfo = ref({ ...initUserInfo })
-  const users = ref([])
+  const users = ref<User[]>([])
 
   // actions
   const cleanUserInfo = () => {

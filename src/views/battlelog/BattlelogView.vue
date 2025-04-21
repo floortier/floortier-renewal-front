@@ -30,7 +30,7 @@ const raceimages = import.meta.glob('@/assets/images/logo_*.png', { eager: true,
 const tierimages = import.meta.glob('@/assets/images/tier_*.png', { eager: true, as: 'url' })
 
 // actions
-const { fetchBattlelogs } = battlelogStore
+const { fetchBattlelogs, saveBattlelog } = battlelogStore
 const { fetchUserList } = userStore
 const { fetchMapList } = mapStore
 
@@ -94,16 +94,54 @@ const {
   goToLast,
 } = pagination(filteredLogs, 10)
 
-const selectOpponent = (seq) => {
+const selectOpponent = (seq: number) => {
   battleInfo.value.opponentSeq = seq
 }
 
-const selectMap = (seq) => {
+const selectMap = (seq: number) => {
   battleInfo.value.mapSeq = seq
 }
 
-const saveBattlelog = () => {
-  console.log(battleInfo.value)
+const validate = () => {
+  if (!battleInfo.value.battleDate) {
+    alert('대전 일자를 선택해주세요.')
+    registerStep.value = 1
+    return false
+  } else if (!battleInfo.value.opponentSeq) {
+    alert('상대 닉네임을 선택해주세요.')
+    registerStep.value = 2
+    return false
+  } else if (battleInfo.value.win === undefined) {
+    alert('승패를 선택해주세요.')
+    registerStep.value = 3
+    return false
+  } else if (!battleInfo.value.mapSeq) {
+    alert('맵을 선택해주세요.')
+    registerStep.value = 4
+    return false
+  }
+
+  return true
+}
+
+const confirmBattlelog = async () => {
+  if (!validate()) {
+    return
+  }
+
+  const message = [
+    '전적을 등록하시겠습니까?',
+    '',
+    battleInfo.value.battleDate ? new Date(battleInfo.value.battleDate).toLocaleString() : '',
+    `승패 : ${battleInfo.value.win ? '승' : '패'}`,
+    `상대 : ${users.value.find((u) => u.floorUserSeq === battleInfo.value.opponentSeq)?.nickname}`,
+    `맵 : ${maps.value.find((m) => m.mapSeq === battleInfo.value.mapSeq)?.name}`,
+  ].join('\n')
+
+  if (confirm(message)) {
+    await saveBattlelog()
+    showRegisterModal.value = false
+  }
 }
 
 // life-cycle
@@ -248,9 +286,9 @@ onBeforeMount(async () => {
           <div
             class="cursor-pointer border-2 rounded p-1"
             :class="
-              battleInfo.isWin === true ? 'animate-smallBounce' : 'transition-transform duration-300 hover:scale-110'
+              battleInfo.win === true ? 'animate-smallBounce' : 'transition-transform duration-300 hover:scale-110'
             "
-            @click.prevent="battleInfo.isWin = true"
+            @click.prevent="battleInfo.win = true"
           >
             <img src="/src/assets/images/winner.png" alt="내가 승자" class="object-cover" />
           </div>
@@ -258,9 +296,9 @@ onBeforeMount(async () => {
           <div
             class="cursor-pointer border-2 rounded p-1"
             :class="
-              battleInfo.isWin === false ? 'animate-smallBounce' : 'transition-transform duration-300 hover:scale-110'
+              battleInfo.win === false ? 'animate-smallBounce' : 'transition-transform duration-300 hover:scale-110'
             "
-            @click.prevent="battleInfo.isWin = false"
+            @click.prevent="battleInfo.win = false"
           >
             <img src="/src/assets/images/loser.png" alt="내가 패자" class="object-cover" />
           </div>
@@ -323,7 +361,7 @@ onBeforeMount(async () => {
           v-if="registerStep === 4"
           text="등록"
           class="px-6 py-2 bg-blue-600 rounded text-white hover:bg-blue-700"
-          @click.prevent="saveBattlelog"
+          @click.prevent="confirmBattlelog"
         />
       </div>
     </div>

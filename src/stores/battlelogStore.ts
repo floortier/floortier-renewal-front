@@ -22,7 +22,7 @@ interface BattleInfo {
   battleDate?: string
   mapSeq?: number
   opponentSeq?: number
-  isWin?: boolean
+  win?: boolean
 }
 
 export const useBattlelogStore = defineStore('battlelogStore', () => {
@@ -46,11 +46,24 @@ export const useBattlelogStore = defineStore('battlelogStore', () => {
     }
   }
 
+  const saveBattlelog = async () => {
+    try {
+      const url = '/api/battlelog'
+      const response = await api.post(url, battleInfo.value)
+      if (response.data.success) {
+        fetchBattlelogs()
+      }
+    } catch (err) {
+      console.error('Error saving battle log:', err)
+    }
+  }
+
   // getters
 
   return {
     battlelogs,
     battleInfo,
     fetchBattlelogs,
+    saveBattlelog,
   }
 })

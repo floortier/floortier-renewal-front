@@ -5,12 +5,19 @@ import api from '@/config/axiosConfig'
 
 import { useCommonStore } from '@/stores/common/commonStore'
 
+interface Map {
+  mapSeq: number
+  name: string
+  keyword: string
+  imageUrl: string
+}
+
 export const useMapStore = defineStore('mapStore', () => {
   // 외부 함수
   const { moveTo } = useCommonStore()
 
   // state
-  const maps = ref([])
+  const maps = ref<Map[]>([])
 
   // actions
   const fetchMapList = async () => {
