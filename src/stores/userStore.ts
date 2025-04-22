@@ -1,12 +1,19 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
 import api from '@/config/axiosConfig'
 
-import { useCommonStore } from '@/stores/common/commonStore'
 import { useAuthStore } from '@/stores/authStore'
+import { useCommonStore } from '@/stores/common/commonStore'
 
-export const useUserStore = defineStore('user', () => {
+interface User {
+  floorUserSeq: number
+  nickname: string
+  userRace: string
+  userTier: string
+}
+
+export const useUserStore = defineStore('userStore', () => {
   // 외부 함수
   const { moveTo } = useCommonStore()
   const authStore = useAuthStore()
@@ -14,39 +21,35 @@ export const useUserStore = defineStore('user', () => {
   // init
   const initUserInfo = {
     userSeq: '',
-    userId: '',
-    userName: '',
+    floorUserSeq: '',
+    username: '',
+    nickname: '',
     userRace: '',
     userTier: '',
   }
 
   // state
   const userInfo = ref({ ...initUserInfo })
+  const users = ref<User[]>([])
 
   // actions
   const cleanUserInfo = () => {
     userInfo.value = { ...initUserInfo }
   }
 
-  const saveProfile = async () => {
-    const url = '/api/user/profile/save'
-    const obj = {
-      userSeq: authStore.userInfo.userSeq,
-      userName: userInfo.value.userName,
-      userRace: userInfo.value.userRace,
-      userTier: userInfo.value.userTier,
-    }
-
-    const res = await api.post(url, obj)
+  const fetchUserList = async () => {
+    const url = '/api/user/list'
+    const res = await api.get(url)
 
     if (res.data.success) {
-      moveTo('/')
+      users.value = res.data.responseData.userList
     }
   }
 
   return {
     userInfo,
+    users,
     cleanUserInfo,
-    saveProfile,
+    fetchUserList,
   }
 })

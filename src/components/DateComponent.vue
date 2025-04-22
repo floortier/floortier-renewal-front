@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { watch } from 'vue'
-import { format } from '@/stores/common/formatter'
+import { format } from 'date-fns'
 
 interface DateProps {
   id: string
-  label: string
+  label?: string
   format: string
   placeholder?: string
   explain?: string
   class?: string
+  range?: boolean
 }
 
 const props = defineProps<DateProps>()
@@ -18,20 +19,31 @@ const value = defineModel({
 })
 
 watch(value, (newValue) => {
-  const date = new Date(`${newValue}`)
-  value.value = format(date, props.format)
+  if (Array.isArray(newValue)) {
+    const formatted = newValue.map((v) => format(new Date(v), props.format))
+    if (JSON.stringify(formatted) !== JSON.stringify(newValue)) {
+      value.value = formatted
+    }
+  } else if (typeof newValue === 'string' && newValue) {
+    const formatted = format(new Date(newValue), props.format)
+    if (formatted !== newValue) {
+      value.value = formatted
+    }
+  }
 })
 </script>
 
 <template>
-  <div>
-    <label :for="props.id" class="block mb-2 text-sm font-medium text-gray-900">
+  <div class="flex flex-col h-[100%] justify-center items-start">
+    <label v-if="props.label" :for="props.id" class="block mb-2 text-sm font-medium text-gray-900">
       {{ props.label }}
     </label>
     <vue-date-picker
       :id="props.id"
+      :class="props.class"
       :placeholder="props.placeholder"
       :format="props.format"
+      :range="props.range"
       week-start="0"
       locale="ko"
       auto-apply

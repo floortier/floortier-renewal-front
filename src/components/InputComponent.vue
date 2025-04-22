@@ -1,7 +1,7 @@
 <script setup lang="ts">
 interface InputProps {
-  id: string
-  label: string
+  id?: string
+  label?: string
   type?: 'text' | 'password' | 'email' | 'number'
   placeholder?: string
   explain?: string
@@ -17,7 +17,7 @@ const value = defineModel({
 
 <template>
   <div>
-    <label :for="props.id" class="block mb-2 text-sm font-medium text-gray-900">
+    <label v-if="props.label" :for="props.id" class="block mb-2 text-sm font-medium text-gray-900">
       {{ props.label }}
     </label>
     <input
