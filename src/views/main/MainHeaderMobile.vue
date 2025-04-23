@@ -13,19 +13,12 @@ onBeforeMount(async () => {
 })
 </script>
 <template>
-  <div class="relative w-full h-24 flex justify-center bg-pastel-green text-white font-bold">
+  <div class="w-full min-w-[1200px] h-24 flex justify-center bg-pastel-green text-white font-bold">
     <div class="flex">
       <div v-for="item in menuList" class="w-25 py-6 px-6 flex justify-center items-center">
         <router-link :to="item.menuPath">
           <span>{{ item.menuName }}</span>
         </router-link>
-      </div>
-    </div>
-    <div class="absolute top-0 right-0">
-      <div class="h-24 flex justify-center items-center p-6">
-        <div class="profile"></div>
-        <div class="username"></div>
-        <div class="logout"></div>
       </div>
     </div>
   </div>
