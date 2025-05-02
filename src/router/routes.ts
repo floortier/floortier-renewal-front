@@ -13,6 +13,7 @@ import ChangepwView from '@/views/authentication/ChangepwView.vue'
 // main
 import dashboardRoute from '@/router/dashboard/dashboardRoute'
 import battlelogRoute from '@/router/battlelog/battlelogRoute'
+import bugreportRoute from '@/router/bugreport/bugreportRoute'
 
 // 404
 import NotFound from '@/views/NotFound.vue'
@@ -23,7 +24,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'main',
     component: MainView,
     redirect: { name: 'Dashboard' },
-    children: [...dashboardRoute, ...battlelogRoute],
+    children: [...dashboardRoute, ...battlelogRoute, ...bugreportRoute],
     meta: { requiresAuth: true },
   },
   {

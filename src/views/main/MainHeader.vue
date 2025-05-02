@@ -16,7 +16,8 @@ onBeforeMount(async () => {
   <div class="relative w-full h-24 flex justify-center bg-pastel-green text-white font-bold">
     <div class="flex">
       <div v-for="item in menuList" class="w-25 py-6 px-6 flex justify-center items-center">
-        <router-link :to="item.menuPath">
+        <router-link :to="item.menuPath" class="flex justify-center items-center gap-1">
+          <div v-html="item.menuIcon"></div>
           <span>{{ item.menuName }}</span>
         </router-link>
       </div>
